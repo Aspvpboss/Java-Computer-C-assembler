@@ -1,0 +1,72 @@
+at 0x0000
+
+; jumps to program
+jmp write_init
+
+
+
+write_init:
+mov r0 #0 ; increment value, like "int i"
+mov r1 #0 ; pointer to start of array
+mov ptr r1
+
+
+
+write_loop:
+; writes nums 0 - 63 into cache addresses 0 - 63
+
+mov [r0] r0     ; use [] to surround offset register for index addressing, assumes value already in ptr register
+add r0 r0 #1
+
+cmp r0 #64
+jif < read_init
+jmp write_loop
+
+
+
+read_init:
+mov r0 #0 ; resets increment value to 0
+
+
+
+read_loop:
+; reads nums 0 - 63 into io0
+
+snd io0 {r0}     ; use [] to surround offset register for index addressing, assumes value already in ptr register
+add r0 r0 #1
+
+cmp r0 #64
+jif < halt
+jmp read_loop
+
+
+
+halt:
+hlt
+
+
+mov r0 c[ptr]
+
+
+
+
+
+-----SAME PROGRAM IN C-------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(void){
+  int *array = malloc(sizeof(int) * 64);
+  for(int i = 0; i < 64; i++)
+    array[i] = i;
+  
+  for(int i = 0; i < 64; i++)
+    printf("%d\n", array[i]);
+  
+  free(array);
+  return 0;
+}
+
+

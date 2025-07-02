@@ -1,0 +1,50 @@
+
+.section_data
+at #0b0000000000
+
+TOP:
+    VARS:                                         
+
+        hello_world: .ascii "Hello|World@"   
+
+
+
+
+
+.section_text
+
+    set STRING_offset r0
+    set STRING_offset_index c{r0}
+    set TEMP_CHAR r1 
+    set CHAR_SCREEN io0 
+    set SET_CHAR_SCREEN io1
+    set NULL_TERM #0                            ; null terminator for string
+
+
+
+        start:
+            jmp init
+            
+        init:
+            cld +VARS                           ; + meaning use page address aka 0b1100 (upper 4 bits)
+            mov r0 &hello_world                 ; - meaning the cache address aka 0b000000 (lower 6 bits)
+            mov ptr r0
+
+            mov STRING_offset #0                ; variable to increment
+            mov TEMP_CHAR #0                    ; temp register for character
+            jmp main    
+
+        main:
+            mov TEMP_CHAR STRING_offset_index
+            cmp TEMP_CHAR NULL_TERM
+            jif == quit 
+            snd CHAR_SCREEN STRING_offset_index
+            add STRING_offset STRING_offset #1
+            jmp main
+
+        quit:
+            snd SET_CHAR_SCREEN c0
+            hlt
+
+
+BOTTOM:

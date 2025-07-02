@@ -1,0 +1,153 @@
+Syntax:
+
+    Comments: semicolons for comments 
+        ; this is a comment 
+
+    Labels: labels have to be one 'string', colon at end of colon to make a label
+        this_is_label:
+        this is not label:
+
+    Byte immediates: Byte immediates force the amount of bytes for an instruction. Byte immediates are dangerous, if a programmer sets an instruction to 1 byte that needs 2 bytes, 
+        the instruction will run incorrectly. Importantly, byte immediates are optional because by default, the assembler will know how many bytes a instruction is.
+        Byte immediates are really only needed for making compact programs.
+
+        add r0 r0 r0 1_byte  ;forces assembler to use 1 byte for the  instruction
+        mov r0 c0 4_bytes 
+
+
+    Addressing:
+
+        Direct Addressing: direct addressing is just using r0, or c10, or io3
+
+            add r0 r0 r1
+
+        Indirect Addressing: use [ptr] for indirect addressing, but you must put a character to indicate what the pointer points to
+
+            r[ptr] ; register pointer
+            c[ptr] ; cache pointer 
+
+        Index Addressing: use c{register} for index addressing. Index addressing uses the value in the pointer register as the base, 
+            and a register value as an offset. Can be used for manipulating arrays
+
+            c{r0} ; index addressing with offset from register 0
+            c{r1} ; index addressing with offset from register 1
+
+        when programming you can only use either indirect addressing or index addressing per instruction (for supporting instructions).
+
+            mov r0 c{r3} ; correct
+            mov r[ptr] c{r3} ; not correct
+
+
+AOP (ALU operation) instructions
+
+    add - addition
+    sub - subtraction 
+    lls - logical left shift 
+    lrs - logical right shift 
+    ars - arithmatic right shift
+    cmp - compare
+
+    not - bitwise not 
+    nor - bitwise nor 
+    nand - bitwise nand 
+    xnor - bitwise xnor 
+    or - bitwise or 
+    and - bitwise and 
+    xor - bitwise xor
+
+    all AOP instructions use this format besides: lls, lrs, ars, and not
+        add (reg return address) (input A reg read address) (input B reg read address) (optinal byte immediate)
+    ex: add r0 r1 r2 ;adds reg1 & reg 2, saves to reg0
+
+mov r0 r1
+mov c0 c1
+mov r1 c0 
+mov c0 r1 
+mov r0 #10 
+mov ptr r7 
+
+
+-------------------------
+
+; generic data
+
+.section_data
+at #0x000
+
+Values:
+    value_1: .byte 10
+    value_2: .byte 10
+
+
+.section_text 
+jmp init
+
+init:
+    cld +Values
+    mov r0 -value_1
+    mov r1 -value_2 
+
+main:
+    cmp r0 r1
+    jif eq print
+    mov r2 #0
+
+quit:   
+    mov c0 r2
+    snd io0 c0
+    hlt
+
+
+print:
+    mov r2 #1
+    jmp quit
+
+-------------------------
+
+
+.section_data
+at #0b1100000000
+
+    hello_world: .ascii "Hello World\0" ; 12 bytes
+
+
+
+.section_text
+
+set STRING_INDEX r0
+set TEMP_CHAR r1 
+
+set CHAR_SCREEN io0 
+set SET_CHAR_SCREEN io1
+
+set NULL_TERM #0                ; null terminator for string
+
+
+at #0x0000000000
+    jmp init
+
+
+init:
+
+    cld +hello_world             ; + meaning use page address aka 0b1100 (upper 4 bits)
+    mov r0 -hello_world          ; - meaning the cache address aka 0b000000 (lower 6 bits)
+    mov ptr r0
+
+    mov STRING_INDEX #0         ; variable to increment
+    mov TEMP_CHAR #0            ; temp register for character
+    jmp main
+
+
+main:
+
+    mov TEMP_CHAR c{STRING_INDEX}
+    cmp TEMP_CHAR NULL_TERM
+    jif eq quit 
+    snd CHAR_SCREEN c{STRING_INDEX}
+    add STRING_INDEX STRING_INDEX #1
+    jmp main
+
+quit:
+snd SET_CHAR_SCREEN c0
+hlt
+
