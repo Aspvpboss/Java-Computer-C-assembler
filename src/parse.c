@@ -102,12 +102,14 @@ int parse_section_data(){
 
 int parse_section_text(){
     int section_text = 0;
+    int section_data = 0;
     for(int c_line = 0; c_line < f.file_lines; c_line++){
         if(t.instruction_array[c_line] == SECTION_TEXT){
             section_text = 1;
             continue;
         } else if(t.instruction_array[c_line] == SECTION_DATA){
             section_text = 0;
+            section_data = 1;
         }
         if(section_text == 0){
             continue;
@@ -124,6 +126,12 @@ int parse_section_text(){
         }
         t.num_bytes[c_line] = tmp;
     }
+
+    if(section_text == 0 && section_data == 0){
+        printf("ERROR: No '.section_text' found\n");
+        return 1;
+    }
+
     return 0;
 }
 
@@ -251,7 +259,7 @@ int parse_sizeof(){
 
 
 //parce.c
-int parse_label_addresses_first(){
+int calculate_label_addresses(){
 
     for(int c_label = 0; c_label < l.num_labels; c_label++){
 
@@ -262,7 +270,7 @@ int parse_label_addresses_first(){
             if(disable_count == 1)
                 continue;
             if(t.instruction_array[c_line] == AT_ADDRESS)
-                sum = get_big_immediate_value(f.file_arrays[c_line][TOKEN_TWO]);
+                sum = get_big_immediate_value(f.file_arrays[c_line][TOKEN_TWO]) + 1;
         
             sum += t.num_bytes[c_line];
 
@@ -273,6 +281,104 @@ int parse_label_addresses_first(){
         if(sum < 0)
             sum = 0;
         l.label_addresses[c_label] = sum;
+    }
+
+    l.total_bytes = 0;
+    for(int i = 0; i < f.file_lines; i++){
+        l.total_bytes += t.num_bytes[i];
+    }
+
+    return 0;
+}
+
+
+
+//parce.c
+int parse_big_label_addresses(){
+
+    for(int c_line = 0; c_line < f.file_lines; c_line++){
+
+        Assembler_Arguments instruction = t.instruction_array[c_line];
+        Opcode_Type opcode = t.opcode_array[c_line];
+        char *label;
+        int address;
+        switch(instruction){
+
+            case(CALL):
+                if(!(opcode == CAL_DIRECT)){
+                    return 0;
+                }
+                label = f.file_arrays[c_line][TOKEN_TWO];
+                address = get_label_address_colon(label);
+
+                if(address + 1 > 255){
+                    t.num_bytes[c_line] = 4;
+                }
+                if(address + 1 > 1023){
+                    printf("ERROR: BYTE OVERFLOW at line '%d'", c_line);
+                    return 1;
+                }
+                calculate_label_addresses();
+
+                return 0;
+
+            case(JUMP):
+                if(!(opcode == JMP_DIRECT)){
+                    return 0;
+                }
+                label = f.file_arrays[c_line][TOKEN_TWO];
+                address = get_label_address_colon(label);
+
+                if(address + 1 > 255){
+                    t.num_bytes[c_line] = 4;
+                }
+                if(address + 1 > 1023){
+                    printf("ERROR: BYTE OVERFLOW at line '%d'", c_line);
+                    return 1;
+                }
+                calculate_label_addresses();
+
+                return 0;
+
+            case(CALL_IF):
+                if(!(opcode == CIF_DIRECT)){
+                    return 0;
+                }
+                label = f.file_arrays[c_line][TOKEN_THREE];
+                address = get_label_address_colon(label);
+
+                if(address + 1 > 255){
+                    t.num_bytes[c_line] = 4;
+                }
+                if(address + 1 > 1023){
+                    printf("ERROR: BYTE OVERFLOW at line '%d'", c_line);
+                    return 1;
+                }
+                calculate_label_addresses();
+
+                return 0;
+
+            case(JUMP_IF):
+                if(!(opcode == JIF_DIRECT)){
+                    return 0;
+                }
+                label = f.file_arrays[c_line][TOKEN_THREE];
+                address = get_label_address_colon(label);
+
+                if(address + 1 > 255){
+                    t.num_bytes[c_line] = 4;
+                }
+                if(address + 1 > 1023){
+                    printf("ERROR: BYTE OVERFLOW at line '%d'", c_line);
+                    return 1;
+                }
+                calculate_label_addresses();
+
+                return 0;
+
+            default:
+                continue;
+        }
     }
     return 0;
 }
@@ -315,11 +421,15 @@ int parse(){
         return 1;
     }
 
-    if(parse_label_addresses_first()){
+    if(calculate_label_addresses()){
         printf("ERROR: parse_label_addresses()\n");
         return 1;
     }
 
+    if(parse_big_label_addresses()){
+        printf("ERROR: parse_big_label_addresses()\n");
+        return 1;
+    }
 
     
     if(parse_sizeof()){

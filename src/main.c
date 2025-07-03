@@ -33,11 +33,12 @@ int main(void){
         return 1;        
     }
 
+    
     printf("\n");
-
     for(int i = 0; i < MAX_BYTES; i++){
         fprintf(f.file_out, "%s\n", f.output_arrays[i]);
     }
+
 
 
     free_memory(&f, &t);

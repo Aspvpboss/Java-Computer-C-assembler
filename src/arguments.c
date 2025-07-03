@@ -531,11 +531,15 @@ char* get_macro(char *string){
 
 
 //arguments.c, returns address tied to label
-int get_label_address(char *string){
+int get_label_address_colon(char *string){
 
     for(int i = 0; i < l.num_labels; i++){
-        if(strcmp(string, l.label_strings[i]) == 0){
-            return l.label_addresses[i];
+        const char *label_with_colon = l.label_strings[i];
+        size_t length = strlen(l.label_strings[i]);
+        if(length > 0 && label_with_colon[length - 1] == ':'){
+            if(strncmp(string, label_with_colon, length - 1) == 0 && string[length - 1] == '\0'){
+                return l.label_addresses[i];
+            }
         }
     }
     return -1;
@@ -543,19 +547,23 @@ int get_label_address(char *string){
 
 
 
-//arguments.c
+//arguments.c, returns cache or page address depending if label starts with '&' or '+', returns -1 if error
 int get_cache_page_address(char *string){
     //page address
     if(string[0] == '+'){
+        printf("burger\n");
         char *dup_string = strdup(string);
         dup_string++;
 
         for(int i = 0; i < l.num_labels; i++){
-            
-            if(check_if_label_colon(l.label_strings[i])){   
-                int page_addr = l.label_addresses[i];
-                return page_addr >>= 6;
-            }
+            const char *label_with_colon = l.label_strings[i];
+            size_t length = strlen(l.label_strings[i]);
+            if(length > 0 && label_with_colon[length - 1] == ':'){
+                if(strncmp(dup_string, label_with_colon, length - 1) == 0 && dup_string[length - 1] == '\0'){
+                    int page_addr = l.label_addresses[i];
+                    return page_addr >>= 6;
+                }
+            }            
         }
     }
 
@@ -564,17 +572,59 @@ int get_cache_page_address(char *string){
         dup_string++;
 
         for(int i = 0; i < l.num_labels; i++){
-            
-            if(check_if_label_colon(l.label_strings[i])){    
-                int page_addr = l.label_addresses[i];
-                int cache_addr = page_addr;
-                page_addr >>= 6;
-                cache_addr -= (page_addr << 6); 
-                return cache_addr;
-            }
+            const char *label_with_colon = l.label_strings[i];
+            size_t length = strlen(l.label_strings[i]);
+            if(length > 0 && label_with_colon[length - 1] == ':'){
+                if(strncmp(dup_string, label_with_colon, length - 1) == 0 && dup_string[length - 1] == '\0'){
+                    int page_addr = l.label_addresses[i];
+                    int cache_addr = page_addr;
+                    page_addr >>= 6;
+                    cache_addr -= (page_addr << 6); 
+                    return cache_addr;                    
+                }
+            }            
         }
     }
+
     return -1;
+}
+
+
+
+//arguments.c, returns char* for arrays of binary, returns NULL if error, must free output string
+char* integer_binary_converter(int integer){
+
+    if(integer < 0){
+        return NULL;
+    }
+    if(integer < 256){
+        char *binary_string = malloc(sizeof(char) * 9);
+        memset(binary_string, '0', sizeof(char) * 9);
+
+        for(int i = 7; integer > 0; i--){
+            binary_string[i] = integer % 2 + '0';
+            integer /= 2;
+        }
+
+        binary_string[8] = '\0';
+        return binary_string;
+    }
+    if(integer < 1024){
+        char *binary_string = malloc(sizeof(char) * 11);
+        memset(binary_string, '0', sizeof(char) * 11);
+
+        for(int i = 9; integer > 0; i--){
+            binary_string[i] = integer % 2 + '0';
+            integer /= 2;
+        }
+
+        binary_string[10] = '\0';
+        return binary_string;
+    }
+
+    if(integer > 1023){
+        return NULL;
+    }
 }
 
 

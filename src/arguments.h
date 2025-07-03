@@ -17,7 +17,8 @@ int check_if_label_colon(char *string);
 int check_flags(char *string);
 
 char* get_macro(char *string);
-int get_label_address(char *string);
+int get_label_address_colon(char *string);
 int get_cache_page_address(char *string);
 int get_big_immediate_value(char *string);
 Assembler_Arguments get_instruction(char *string);
+char* integer_binary_converter(int integer);

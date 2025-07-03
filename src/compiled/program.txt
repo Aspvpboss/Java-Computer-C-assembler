@@ -3,81 +3,22 @@ TOP:
 
 
 .section_text
-    
-    ; variables
-    set ball_x r0
-    set ball_y r1
-    set flag_x *r0
-    set flag_y *r1
-    set x_speed r2
-    set y_speed r3
-
-    ; constants
-    set X_SCREEN_MAX #15
-    set X_SPEED_POS #1
-    set X_SPEED_NEG #255
-
-    set Y_SCREEN_MAX #15
-    set Y_SPEED_POS #1
-    set Y_SPEED_NEG #255
-
-
-    ; io 
-    set x_screen_io io0
-    set y_screen_io io1
-    set set_screen io2
 
 
     at #0b0000000000
 
-        init:
-            mov ball_x #0
-            mov ball_y #2
-            mov x_speed X_SPEED_POS
-            mov y_speed Y_SPEED_POS
 
         main:
-            ;set screen
-            mov c0 ball_x
-            snd x_screen_io c0
-            mov c0 ball_y
-            snd y_screen_io c0
-            snd set_screen c0  
+    
+            jif != quit
 
-            add flag_x ball_x x_speed
-            cif neg x_neg 
-            cmp ball_x X_SCREEN_MAX
-            cif >> x_gre
+    at #0b0011111111
 
-            add flag_y ball_y y_speed
-            cif neg y_neg 
-            cmp ball_y Y_SCREEN_MAX
-            cif >> y_gre
-            jmp main  
+        quit:
+            hlt
 
-    at #0b0001000000
-
-        x_neg:
-            mov ball_x #0
-            mov x_speed X_SPEED_POS
-            ret
-            
-        x_gre:
-            mov ball_x X_SCREEN_MAX
-            mov x_speed X_SPEED_NEG
-            ret
-            
-        y_neg:
-            mov ball_y #0
-            mov y_speed Y_SPEED_POS
-            ret
-            
-        y_gre:
-            mov ball_y Y_SCREEN_MAX
-            mov y_speed Y_SPEED_NEG
-            ret
-
-sizeof TOP BOTTOM
+sizeof LINES
+sizeof LABELS
 
 BOTTOM:
 

@@ -851,7 +851,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 if(check_if_label_colon(tk_2)){
                     *opcode = CAL_DIRECT;
-                    return 4;
+                    return 3;
                 }   
                 if(check_reg(tk_2, INDIRECT_ADDRESSING)){
                     *opcode = CAL_INDIRECT_3;
