@@ -78,8 +78,6 @@ TOP:
             ret
 
 sizeof TOP BOTTOM
-sizeof LABELS
-sizeof LINES
 
 BOTTOM:
 

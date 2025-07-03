@@ -154,7 +154,7 @@ typedef enum{
 
 
 
-
+#define MAX_BYTES 1024
 
 typedef struct{
 
@@ -165,6 +165,8 @@ typedef struct{
     //first index is for lines of file, second is for tokens, third is for characters of the token
     char ***file_arrays;
     int file_array_size;
+
+    char **output_arrays;
 
 } File_Info;
 extern File_Info f;
@@ -214,3 +216,4 @@ extern Set_Vars set;
 #include "parse.h"
 #include "arguments.h"
 #include "get_bytes.h"
+#include "generate.h"

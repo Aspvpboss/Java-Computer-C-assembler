@@ -166,14 +166,14 @@ int parse_sizeof(){
 
         //previous line sizeof
 
-        if((t.num_tokens[c_line] == 2) && (strcasecmp(f.file_arrays[c_line][TOKEN_TWO], "previous") == 0)){
+        if((t.num_tokens[c_line] == 2) && (strcmp(f.file_arrays[c_line][TOKEN_TWO], "PREVIOUS") == 0)){
             if(c_line == 0){
                 printf("ERROR: cannot use 'sizeof previous' in the first line of program\n");
                 return 1;
             }
         }
 
-        if((t.num_tokens[c_line] == 2) && (strcasecmp(f.file_arrays[c_line][TOKEN_TWO], "previous") == 0)){
+        if((t.num_tokens[c_line] == 2) && (strcmp(f.file_arrays[c_line][TOKEN_TWO], "PREVIOUS") == 0)){
             for(int i = 0; i < t.num_tokens[c_line - 1]; i++){
                 printf("%s ", f.file_arrays[c_line - 1][i]);
             }
@@ -183,8 +183,8 @@ int parse_sizeof(){
             continue;
         }
         
-        if((t.num_tokens[c_line] == 2) && !(strcasecmp(f.file_arrays[c_line][TOKEN_TWO], "previous") == 0)){
-            printf("ERROR: expected 'previous' for second token at line '%d'\n", c_line + 1);
+        if((t.num_tokens[c_line] == 2) && !(strcmp(f.file_arrays[c_line][TOKEN_TWO], "PREVIOUS") == 0)){
+            printf("ERROR: expected second token at line '%d'\n", c_line + 1);
             return 1;
         }
 

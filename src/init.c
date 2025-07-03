@@ -20,6 +20,11 @@ int init_files(File_Info *f, Token_Info *t){
         return 1;
     }
 
+    f->output_arrays = malloc(sizeof(char*) * MAX_BYTES);
+    for(int i = 0; i < MAX_BYTES; i++){
+        f->output_arrays[i] = strdup("00000000");
+    }
+
 
 
     //lines in program.txt
@@ -63,6 +68,10 @@ void free_memory(File_Info *f, Token_Info *t){
     free(l.label_strings);
     free(l.label_addresses);
 
+    for(int i = 0; i < MAX_BYTES; i++){
+        free(f->output_arrays[i]);
+    }
+    free(f->output_arrays);
 
     free(f->file_arrays);
     free(t->num_tokens);    
