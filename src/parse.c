@@ -160,6 +160,15 @@ int parse_sizeof(){
             continue;
         }
 
+        //ALL sizeof
+        if((t.num_tokens[c_line] == 2) && (strcmp(f.file_arrays[c_line][TOKEN_TWO], "ALL") == 0)){
+            printf("\nTotal Bytes: %d\n", l.total_bytes);
+
+            enable_sizeof = 0;
+            enable_count = 0;
+            continue;
+        }
+
         //LINES sizeof
         if((t.num_tokens[c_line] == 2) && (strcmp(f.file_arrays[c_line][TOKEN_TWO], "LINES") == 0)){
             printf("\nALL LINES w/ size in bytes\n");
@@ -300,14 +309,23 @@ int parse_big_label_addresses(){
 
         Assembler_Arguments instruction = t.instruction_array[c_line];
         Opcode_Type opcode = t.opcode_array[c_line];
+        int MAX_TOKENS = t.num_tokens[c_line];
         char *label;
         int address;
+      
+
+
         switch(instruction){
 
             case(CALL):
                 if(!(opcode == CAL_DIRECT)){
-                    return 0;
+                    continue;
                 }
+
+                if(!(MAX_TOKENS == 2)){
+                    continue;
+                }
+
                 label = f.file_arrays[c_line][TOKEN_TWO];
                 address = get_label_address_colon(label);
 
@@ -320,12 +338,19 @@ int parse_big_label_addresses(){
                 }
                 calculate_label_addresses();
 
-                return 0;
+                continue;
 
             case(JUMP):
+          
+
                 if(!(opcode == JMP_DIRECT)){
-                    return 0;
+                    continue;
                 }
+
+                if(!(MAX_TOKENS == 2)){
+                    continue;
+                }
+
                 label = f.file_arrays[c_line][TOKEN_TWO];
                 address = get_label_address_colon(label);
 
@@ -338,12 +363,17 @@ int parse_big_label_addresses(){
                 }
                 calculate_label_addresses();
 
-                return 0;
+                continue;
 
             case(CALL_IF):
                 if(!(opcode == CIF_DIRECT)){
-                    return 0;
+                    continue;
                 }
+
+                if(!(MAX_TOKENS == 3)){
+                    continue;
+                }
+
                 label = f.file_arrays[c_line][TOKEN_THREE];
                 address = get_label_address_colon(label);
 
@@ -356,12 +386,17 @@ int parse_big_label_addresses(){
                 }
                 calculate_label_addresses();
 
-                return 0;
+                continue;
 
             case(JUMP_IF):
                 if(!(opcode == JIF_DIRECT)){
-                    return 0;
+                    continue;
                 }
+
+                if(!(MAX_TOKENS == 3)){
+                    continue;
+                }
+
                 label = f.file_arrays[c_line][TOKEN_THREE];
                 address = get_label_address_colon(label);
 
@@ -374,7 +409,7 @@ int parse_big_label_addresses(){
                 }
                 calculate_label_addresses();
 
-                return 0;
+                continue;
 
             default:
                 continue;
@@ -431,11 +466,11 @@ int parse(){
         return 1;
     }
 
-    
     if(parse_sizeof()){
         printf("ERROR: parse_sizeof()\n");
         return 1;
     }
+    
     
     return 0;
 }

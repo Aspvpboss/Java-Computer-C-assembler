@@ -12,6 +12,8 @@
 typedef enum{
 
     NONE,
+    LABEL_STRING,
+    LABEL_INT,
     HLT_DIRECT,
     NOP_DIRECT,
     ALU_1,

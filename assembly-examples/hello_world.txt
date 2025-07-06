@@ -3,6 +3,7 @@
 at #0b0000000000
 
 TOP:
+
     VARS:                                         
 
         hello_world: .ascii "Hello|World@"   
@@ -21,18 +22,10 @@ TOP:
     set NULL_TERM #0                            ; null terminator for string
 
 
-
-        start:
-            jmp init
-            
         init:
             cld +VARS                           ; + meaning use page address aka 0b1100 (upper 4 bits)
             mov r0 &hello_world                 ; - meaning the cache address aka 0b000000 (lower 6 bits)
             mov ptr r0
-
-            mov STRING_offset #0                ; variable to increment
-            mov TEMP_CHAR #0                    ; temp register for character
-            jmp main    
 
         main:
             mov TEMP_CHAR STRING_offset_index
@@ -46,5 +39,5 @@ TOP:
             snd SET_CHAR_SCREEN c0
             hlt
 
-
+sizeof TOP BOTTOM
 BOTTOM:

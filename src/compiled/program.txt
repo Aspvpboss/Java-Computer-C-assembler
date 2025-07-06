@@ -1,24 +1,39 @@
 
-TOP:
+.section_data
+at #0b0000000000
+
+
+    VARS:                                         
+        hello_world: .ascii "Hello|World@"   
+
+
 
 
 .section_text
 
 
-    at #0b0000000000
+        set NULL_TERM #0
 
+
+        init:
+            cld +VARS                           ; + meaning use page address aka 0b1100 (upper 4 bits)
+            mov r0 &hello_world                 ; - meaning the cache address aka 0b000000 (lower 6 bits)
+            mov ptr r0
 
         main:
-    
-            jif != quit
-
-    at #0b0011111111
+            mov r1 c{r0}
+            cmp r1 NULL_TERM
+            jif == quit 
+            snd io0 c{r0}
+            add r0 r0 #1
+            jmp main
 
         quit:
+        
+            mov r0 -main
+            snd io1 c0
             hlt
 
+
+
 sizeof LINES
-sizeof LABELS
-
-BOTTOM:
-

@@ -1,6 +1,4 @@
 
-TOP:
-
 
 .section_text
     
@@ -77,6 +75,4 @@ TOP:
             mov ball_y Y_SCREEN_MAX
             mov y_speed Y_SPEED_NEG
             ret
-
-BOTTOM:
 

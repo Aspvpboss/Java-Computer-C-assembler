@@ -212,6 +212,17 @@ int check_cache(char *string, Address_Mode mode){
         }
     }
 
+
+    if(string[0] == '-' && (mode == DIRECT_ADDRESSING || mode == ANY_ADDRESSING)){
+        char *dup_string = strdup(string);
+        dup_string++;
+
+        if(check_if_label_colon(dup_string)){
+            return 1;
+        }
+    }
+
+
     regfree(&direct_pattern);
     regfree(&indirect_pattern);
     regfree(&index_pattern);
@@ -567,7 +578,7 @@ int get_cache_page_address(char *string){
         }
     }
 
-    if(string[0] == '&'){
+    if(string[0] == '&' || string[0] == '-'){
         char *dup_string = strdup(string);
         dup_string++;
 
@@ -591,7 +602,7 @@ int get_cache_page_address(char *string){
 
 
 
-//arguments.c, returns char* for arrays of binary, returns NULL if error, must free output string
+//arguments.c, returns char* for arrays of binary, returns NULL if error, must free output char*
 char* integer_binary_converter(int integer){
 
     if(integer < 0){
@@ -634,7 +645,7 @@ int get_big_immediate_value(char *string){
 
     if(check_big_immediate(string, DECIMAL_IMMEDIATE)){
         char *dup = strdup(string);
-        dup += 3;
+        dup += 1;
         return strtol(dup, NULL, 10);
     }
     if(check_big_immediate(string, BINARY_IMMEDIATE)){

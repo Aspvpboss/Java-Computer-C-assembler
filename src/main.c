@@ -16,7 +16,6 @@ int main(void){
     }
 
 
-
     if(tokenize()){
         printf("ERROR_FUNCTION: tokenize\n");
         printf("unsuccessful assembled\n");
@@ -38,6 +37,8 @@ int main(void){
     for(int i = 0; i < MAX_BYTES; i++){
         fprintf(f.file_out, "%s\n", f.output_arrays[i]);
     }
+
+
 
 
 
