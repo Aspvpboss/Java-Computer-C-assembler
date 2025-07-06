@@ -2,13 +2,9 @@
 .section_data
 at #0b0000000000
 
-TOP:
+VARS:                                         
 
-    VARS:                                         
-
-        hello_world: .ascii "Hello|World@"   
-
-
+    hello_world: .ascii "Hello|World@"   
 
 
 
@@ -39,5 +35,9 @@ TOP:
             snd SET_CHAR_SCREEN c0
             hlt
 
-sizeof TOP BOTTOM
-BOTTOM:
+sizeof PREVIOUS
+sizeof ALL
+sizeof LINES
+sizeof LABELS
+sizeof main quit
+; example of all sizeof functions

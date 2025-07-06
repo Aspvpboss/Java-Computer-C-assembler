@@ -16,11 +16,13 @@ at #0b0000000000
 
 
         init:
+
             cld +VARS                           ; + meaning use page address aka 0b1100 (upper 4 bits)
             mov r0 &hello_world                 ; - meaning the cache address aka 0b000000 (lower 6 bits)
             mov ptr r0
 
         main:
+        
             mov r1 c{r0}
             cmp r1 NULL_TERM
             jif == quit 

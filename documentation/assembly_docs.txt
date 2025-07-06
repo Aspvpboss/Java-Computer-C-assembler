@@ -1,44 +1,178 @@
-Syntax:
 
-    Comments: semicolons for comments 
-        ; this is a comment 
+Whitespace: indentation or whitespace in a line does not affect the syntax of the instruction,
+    combining arguments accidently will throw an error
 
-    Labels: labels have to be one 'string', colon at end of colon to make a label
-        this_is_label:
-        this is not label:
-
-    Byte immediates: Byte immediates force the amount of bytes for an instruction. Byte immediates are dangerous, if a programmer sets an instruction to 1 byte that needs 2 bytes, 
-        the instruction will run incorrectly. Importantly, byte immediates are optional because by default, the assembler will know how many bytes a instruction is.
-        Byte immediates are really only needed for making compact programs.
-
-        add r0 r0 r0 1_byte  ;forces assembler to use 1 byte for the  instruction
-        mov r0 c0 4_bytes 
+    mov          r0 r1           ; correct syntax
+    add   r0    r0r0             ; incorrect syntax
 
 
-    Addressing:
+Comments: semicolons for comments, comments are ignored by the assembler 
 
-        Direct Addressing: direct addressing is just using r0, or c10, or io3
+    ; this is a comment 
 
-            add r0 r0 r1
+.section_data: use '.section_data' to define an area to define strings and values. These values will be loaded into the memory with the program. 
+    Define a label and then either use '.ascii' for strings and '.byte' for numbers. For stings '|' are spaces and '@' are null terminators. 
+    Order between .section_text and .section_data doesn't matter.
 
-        Indirect Addressing: use [ptr] for indirect addressing, but you must put a character to indicate what the pointer points to
-
-            r[ptr] ; register pointer
-            c[ptr] ; cache pointer 
-
-        Index Addressing: use c{register} for index addressing. Index addressing uses the value in the pointer register as the base, 
-            and a register value as an offset. Can be used for manipulating arrays
-
-            c{r0} ; index addressing with offset from register 0
-            c{r1} ; index addressing with offset from register 1
-
-        when programming you can only use either indirect addressing or index addressing per instruction (for supporting instructions).
-
-            mov r0 c{r3} ; correct
-            mov r[ptr] c{r3} ; not correct
+        .section_data
+            string: .ascii "Hello|World@"
+            number: .byte #127
 
 
-AOP (ALU operation) instructions
+.section_text: use '.section_text' to define the area where your code is. Order between .section_text and .section_data doesn't matter.
+
+    .section_text
+        add r0 r0 r0
+        add r0 r0 r0
+
+
+Labels: labels have to be one string, when defining them you must end them with a colon. When using them in instructions
+    you don't need to type the colon. A label is basically a 10-bit address under the hood.
+
+        this_is_label:      ; correct label
+        this is not label:  ; incorrect label
+
+
+Byte immediates: Use byte immediate to set the amount of bytes for an instruction. This is unnessary for usual programming since the assembler know how long each instruction can be, 
+    but can be useful for saving memory. They can also be very dangerous because some instructions require certain amounts of bytes to function properly. Please read the google sheet 
+    machine code documentation for better understanding.
+
+        add r0 r0 r0 1_byte  ; 1 byte for the instruction
+        mov r0 c0 4_bytes    ; 4 byte for the instruction
+
+
+Immediates: there are 4 types of immediates; decimal, hexadecimal, binary, and labels. Immediates loaded into the computer are 1 byte.
+    For labels, start label with '+' for page immediate for the label (upper 4-bits) , use '&' with cache immediate for labels (lower 6-bits).
+
+        #21        ; decimal
+        #0x1a      ; hexadecimal
+        #0b11010   ; binary
+
+        +label     ; page address for label
+        &label     ; cache address for label.
+
+
+At: use 'at' to define at what memory address code should start at, use an immediate to define where. You can define 'at' multiple times for 
+    optimization purposes to keep programs or functions within the same page.
+
+        at #0b1111111111
+        at #0x3ff
+        at #1023
+
+
+Set: use 'set' to define macros for use in programs, use 'set' then what macro, and then what the macro is (ex. 'r0'). 
+    You can use macros for arguments for instructions. You can't use macros for opcodes and byte immediates
+
+        set TEMP_REG r0        
+        set CONSTANT #10
+        set TEMP_CACHE c10
+
+
+Sizeof function:
+
+    sizeof PREVIOUS: this function will print the size of the previous line in bytes to the terminal
+
+        add r0 r0 r0 4_bytes
+        sizeof PREVIOUS         ; this would print 4 bytes
+
+
+    sizeof label to label: this function will print the size of in bytes from one label to another
+
+        label_start:
+
+            add r0 r0 r0 4_bytes
+            add r0 r0 r0 4_bytes
+            add r0 r0 r0 4_bytes
+
+        label_end:
+        sizeof label_start label_end    ; this would print 12 bytes
+
+    sizeof ALL: this function will print the size of entire program in bytes
+
+        add r0 r0 r0 4_bytes
+        add r0 r0 r0 4_bytes
+        add r0 r0 r0 4_bytes
+        add r0 r0 r0 4_bytes
+        sizeof ALL              ; this would print 16 bytes
+    
+    sizeof LINES: this function prints size of each line in the program
+
+        add r0 r0 r0 4_bytes
+        add r0 r0 r0 3_bytes
+        add r0 r0 r0 2_bytes
+        sizeof LINES            ; this would print 4, 3, 2
+
+    sizeof LABELS: this function prints the address of each label in the program
+
+        label_1:
+            add r0 r0 r0 4_bytes
+
+        label_2:
+
+        sizeof LABELS           ; this would print 0 and then 4
+
+
+Addressing:
+
+    Direct Addressing: direct addressing is just using r0, or c10, or io3
+
+        add r0 r0 r1
+
+
+    Indirect Addressing: use [ptr] for indirect addressing, but you must put a character to indicate what the pointer points to
+
+        r[ptr] ; register pointer
+        c[ptr] ; cache pointer 
+        p[ptr] ; page pointer
+        x[ptr] ; external pointer
+
+
+    Index Addressing: use c{register} for index addressing. Index addressing uses the value in the pointer register as the base, 
+        and a register value as an offset. Can be used for manipulating arrays
+
+        c{r0} ; index addressing with offset from register 0
+        c{r1} ; index addressing with offset from register 1
+
+
+    Labels: you can use labels for certain direct addressing cases. Use '+' before a label to address the page address of a label (upper 4 bits).
+        Use '-' before a label ot address the cache address (bottom 6 bits).
+
+        cld +label
+        mov r0 -label
+
+
+    Use cases: when programming you can only use either indirect addressing or index addressing per instruction (for supporting instructions).
+
+        mov r0 c{r3} ; correct
+        mov r[ptr] c{r3} ; not correct
+
+
+Memory hierarchy:
+
+    Main Order: from lowest to highest; registers, cache, and RAM
+
+    Registers: There are 8 registers total, from r0 - r7. These directly interact with the ALU. The register can send a receive data to the data stack, and to the cache. 
+        Finally, the registers can send a value to the pointer register, use keyword 'ptr' when moving values into it.
+    
+    Cache: There are 64 addressing in cache, from c0 - c63. These can send and receive data from the registers, io ports, and the ram. When addressing the io ports, 
+        use io0 - io7. Input io ports and output io ports are seperate. So there's 8 output ports and 8 input ports.
+
+    RAM: There are 16 pages of 64 bytes in RAM, from p0 - p15. These can send a receive data from the cache and external memory. When storing and loading to the Cache, 
+        it loads or stores the entirity of the cache. When addressing external memory, use x0 - x255 for selecting pages. Since the computer is Von Neumann, the program
+        and data share memory in the RAM, everywhere else its seperate. Keep that in mind.
+
+    
+Opcodes: an opcodes lettercase doesn't throw a syntax error, as long as it's spelled correct
+
+    add r0 r0 r0
+    aDd r0 r0 r0
+    ADD r0 r0 r0
+
+
+
+AOP (ALU operation) opcode:
+
+    AOP instructions only support direct addressing
 
     add - addition
     sub - subtraction 
@@ -55,99 +189,231 @@ AOP (ALU operation) instructions
     and - bitwise and 
     xor - bitwise xor
 
-    all AOP instructions use this format besides: lls, lrs, ars, and not
-        add (reg return address) (input A reg read address) (input B reg read address) (optinal byte immediate)
-    ex: add r0 r1 r2 ;adds reg1 & reg 2, saves to reg0
+    If you want to set the flags for any operation (excluding cmp), you can use '*' before the return register
+    ex: add *r0 r1 r2
 
-mov r0 r1
-mov c0 c1
-mov r1 c0 
-mov c0 r1 
-mov r0 #10 
-mov ptr r7 
+    syntax for all AOP instructions besides: lls, lrs, ars, cmp, and not:
 
+        add (reg return address) (input A reg read address) (input B reg read address) (optional byte immediate)
+        add (reg return address) (input A reg read address) (input B Immediate) (optional byte immediate)
 
--------------------------
+    syntax for lls, lrs, ars, and not:
 
-; generic data
+        not (reg return address) (input B reg read address) (optional byte immediate)
+        not (reg return address) (input B Immediate) (optional byte immediate)
 
-.section_data
-at #0x000
+    syntax for cmp:
 
-Values:
-    value_1: .byte 10
-    value_2: .byte 10
+        cmp (compare A reg address) (compare B reg address) (optional byte immediate)
+        cmp (compare A reg address) (compare B Immediate) (optional byte immediate)
 
 
-.section_text 
-jmp init
+MOV opcode:
 
-init:
-    cld +Values
-    mov r0 -value_1
-    mov r1 -value_2 
+    all MOV instructions support direct and indirect addressing. When moving from registers to cache and vice versa, they support index addressing
+    for addressing the cache
 
-main:
-    cmp r0 r1
-    jif eq print
-    mov r2 #0
+    mov - move 
 
-quit:   
-    mov c0 r2
-    snd io0 c0
-    hlt
+    syntax for all combinations
+
+        mov (reg write address) (immediate) (optional byte immediate)
+        mov (reg write address) (reg read address) (optional byte immediate)
+        mov (cache write address) (cache read address) (optional byte immediate)
+        mov (pointer register) (reg read addresss) (optional byte immediate)
+        mov (reg write address) (cache read address) (optional byte immediate)
+        mov (cache write address) (reg read address) (optional byte immediate)
 
 
-print:
-    mov r2 #1
-    jmp quit
+PSH opcode:
 
--------------------------
+    PSH supports direct and indirect addressing
+    this push a number from a register into the data stack
+
+    psh - push 
+
+    syntax for psh
+
+        psh (reg read address) (optional byte immediate)
+ 
+
+POP opcode:
+
+    POP supports direct and indirect addressing
+    this pops a number from the data stack into a register
+
+    pop - pop 
+
+    syntax for pop
+
+        pop (reg write address) (optional byte immediate)
+ 
+
+CLD opcode:
+
+    CLD supports direct and indirect addressing
+    this loads a page from the RAM into the cache
+
+    cld - cache load 
+
+    syntax for cld 
+
+        cld (RAM page address) (optional byte immediate)
+ 
+
+CST opcode:
+
+    CST supports direct and indirect addressing
+    this stores the contents of the cache into a page of RAM
+
+    cst - cache store
+
+    syntax for cst 
+
+        cst (RAM page address) (optional byte immediate)
 
 
-.section_data
-at #0b1100000000
+XLD opcode:
 
-    hello_world: .ascii "Hello World\0" ; 12 bytes
+    XLD supports direct and indirect addressing
+    this loads a page of external memory to a page in RAM
 
+    xld - external load 
 
+    syntax for xld
 
-.section_text
-
-set STRING_INDEX r0
-set TEMP_CHAR r1 
-
-set CHAR_SCREEN io0 
-set SET_CHAR_SCREEN io1
-
-set NULL_TERM #0                ; null terminator for string
+        xld (RAM page address) (external page address) (optional byte immediate)
 
 
-at #0x0000000000
-    jmp init
+XST opcode:
+
+    XST supports direct and indirect addressing
+    this stores a page of RAM into a page of external memory
+
+    xst - external load 
+
+    syntax for xst
+
+        xst (external page address) (RAM page address) (optional byte immediate)
 
 
-init:
+SND opcode:
 
-    cld +hello_world             ; + meaning use page address aka 0b1100 (upper 4 bits)
-    mov r0 -hello_world          ; - meaning the cache address aka 0b000000 (lower 6 bits)
-    mov ptr r0
+    SND supports direct and indirect addressing
+    this sends a value from cache to an io ports
 
-    mov STRING_INDEX #0         ; variable to increment
-    mov TEMP_CHAR #0            ; temp register for character
-    jmp main
+    snd - send 
+
+    syntax for snd 
+
+        snd (io port) (cache read address) (optional byte immediate)
 
 
-main:
+REC opcode:
 
-    mov TEMP_CHAR c{STRING_INDEX}
-    cmp TEMP_CHAR NULL_TERM
-    jif eq quit 
-    snd CHAR_SCREEN c{STRING_INDEX}
-    add STRING_INDEX STRING_INDEX #1
-    jmp main
+    REC supports direct and indirect addressing
+    this receives a value from an io port and saves it to cache
 
-quit:
-snd SET_CHAR_SCREEN c0
-hlt
+    rec - receive 
 
+    syntax for rec
+
+        rec (cache write address) (io port) (optional byte immediate)
+
+
+WRE opcode:
+
+    WRE supports direct and indirect addressing
+    this receives a value from an io port and saves it to cache.
+    Additionally, the computer stalls until it receives a signal that
+    a value was sent
+
+    wre - wait receive 
+
+    syntax for wre
+
+        wre (cache write address) (io port) (optional byte immediate)
+
+
+JMP opcode:
+
+    JMP supports direct and indirect addressing, use r[ptr] for indirect addressing 
+    this unconditionally jumps to a label in memory or address in memory
+
+    jmp - jump
+
+    syntax for jmp
+
+        jmp (label) (optional byte immediate)
+
+
+JIF opcode:
+
+    JIF supports direct and indirect addressing, use r[ptr] for indirect addressing 
+    this conditionally jumps to a label in memory or address in memory
+
+    jif - jump if 
+
+    syntax for jif
+
+        jif (flag condition) (label) (optional byte immediate)
+
+
+CAL opcode:
+
+    CAL supports direct and indirect addressing, use r[ptr] for indirect addressing 
+    this unconditionally jumps to a function (a label) in memory or address in memory
+
+    CAL - call
+
+    syntax for cal
+
+        cal (label) (optional byte immediate)
+
+
+CIF opcode:
+
+    CIF supports direct and indirect addressing, use r[ptr] for indirect addressing 
+    this conditionally jumps to a function (a label) in memory or address in memory
+
+    cif - call if 
+
+    syntax for cif
+
+        cif (flag condition) (label) (optional byte immediate)
+
+
+RET opcode:
+
+    RET supports no addressing, since you don't address anything
+    this returns from a function call (CAL or CIF)
+
+    ret - return
+
+    syntax for ret
+
+        ret (optional byte immediate)
+
+
+HLT opcode:
+
+    HLT supports no addressing, since you don't address anything
+    this halts the computer, stops the clock 
+
+    hlt - halt 
+
+    syntax for hlt 
+
+        hlt (optional byte immediate)
+
+
+NOP opcode:
+
+    NOP supports no addressing, since you don't address anything
+    this does nothing,
+
+    nop - no operation 
+
+    syntax for nop 
+
+        nop (optional byte immediate)

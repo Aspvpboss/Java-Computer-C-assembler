@@ -1,0 +1,111 @@
+
+/*
+
+for examples about labels, I use 'labels:' as an example
+I do the same with comment examples too.
+for examples with direct addressing, like r0 or c0. I use the max value that it can be. 
+Since largest register is r7, I use the example r7
+
+*/
+
+Directives:
+
+    at 
+    set 
+    sizeof 
+    PREVIOUS 
+    LINES 
+    LABELS 
+    ALL 
+    .section_data
+    .section_text
+    ;comments
+
+    labels:
+    +labels
+    -labels
+    &labels
+    .ascii
+    .byte
+
+Byte Immediates:
+
+    1_byte
+    2_bytes
+    3_bytes
+    4_bytes
+
+Addressing:
+
+    ptr
+    r7
+    io7
+    c63
+    p15
+    x255
+
+    r[ptr]
+    c[ptr]
+    p[ptr]
+    x[ptr]
+
+    c{r7}
+
+Flags:
+
+    car 
+    over
+    neg
+    zero
+
+    ==
+    !=
+
+    >>
+    <<
+    >=
+    <=
+
+    S>>
+    S<<
+    S>=
+    S<=
+
+
+Opcodes:
+
+    add
+    sub
+    lls
+    lrs
+    ars
+    not
+    nor
+    nand
+    xnor
+    or
+    and
+    xor
+    cmp
+
+    mov
+    psh
+    pop
+    cld
+    cst
+    xld
+    xst
+
+    snd
+    rec
+    wre
+
+    jmp
+    jif
+    cal
+    cif
+
+    nop
+    hlt
+
+59 "keywords"
