@@ -108,4 +108,4 @@ Opcodes:
     nop
     hlt
 
-59 "keywords"
+73 "keywords"
