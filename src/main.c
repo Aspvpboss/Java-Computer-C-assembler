@@ -32,17 +32,18 @@ int main(void){
         return 1;        
     }
 
-    
+
+
+    if(generate()){
+        printf("ERROR_FUNCTION: generate\n");
+        printf("unsuccessful assembled\n");
+        free_memory(&f, &t);
+        return 1;           
+    } 
     printf("\n");
-    for(int i = 0; i < MAX_BYTES; i++){
-        fprintf(f.file_out, "%s\n", f.output_arrays[i]);
-    }
-
-
-
-
 
     free_memory(&f, &t);
+
     printf("\n");
     printf("successful assembled\n");
     return 0;

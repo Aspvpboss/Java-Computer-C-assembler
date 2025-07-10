@@ -479,6 +479,30 @@ int check_if_label_colon(char *string){
 
 
 
+//argument.c, returns 1 if label exists without the colon and with '+' or '-' or '&', returns 0 if not
+int check_label_colon_cache_page(char *string){
+    
+    if(!(string[0] == '&' || string[0] == '-' || string[0] == '+')){
+        return 0;
+    }
+    char *dup_string = strdup(string);
+    dup_string++;
+
+    for(int i = 0; i < l.num_labels; i++){
+        const char *label_with_colon = l.label_strings[i];
+        size_t length = strlen(l.label_strings[i]);
+        if(length > 0 && label_with_colon[length - 1] == ':'){
+            if(strncmp(dup_string, label_with_colon, length - 1) == 0 && dup_string[length - 1] == '\0'){
+                return 1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+
+
 //arguments.c, returns 1 if string a flag
 int check_flags(char *string){
     if(strcmp(string, "zero") == 0){
@@ -562,7 +586,6 @@ int get_label_address_colon(char *string){
 int get_cache_page_address(char *string){
     //page address
     if(string[0] == '+'){
-        printf("burger\n");
         char *dup_string = strdup(string);
         dup_string++;
 
@@ -664,6 +687,74 @@ int get_big_immediate_value(char *string){
 
 
 
+//arguments.c, returns value of an arguments, aka r0 would return 0
+int get_argument_value(char *string){
+
+
+    if(check_label_colon_cache_page(string)){
+        return get_cache_page_address(string);
+    }
+
+    if(check_if_label_colon(string)){
+        return get_label_address_colon(string);
+    }
+
+    if(check_reg(string, ANY_ADDRESSING)){
+        if(check_reg(string, DIRECT_ADDRESSING)){
+            return strtol(string + 1, NULL, 10);
+        }
+        if(check_reg(string, INDIRECT_ADDRESSING)){
+            return 0;
+        }
+    }
+
+
+    if(check_reg_flags(string, ANY_ADDRESSING)){
+        if(check_reg_flags(string, DIRECT_ADDRESSING)){
+            return string[2] - '0';
+        }
+        if(check_reg_flags(string, INDIRECT_ADDRESSING)){
+            return 0;
+        }        
+    }
+
+
+    if(check_cache(string, ANY_ADDRESSING)){
+        if(check_cache(string, DIRECT_ADDRESSING)){
+            return strtol(string + 1, NULL, 10);
+        }
+        if(check_cache(string, INDIRECT_ADDRESSING)){
+            return 0;
+        }
+        if(check_cache(string, INDEX_ADDRESSING)){
+            return string[3] - '0';
+        }
+    }
+
+    if(check_page(string, ANY_ADDRESSING)){
+        if(check_page(string, DIRECT_ADDRESSING)){
+            return strtol(string + 1, NULL, 10);
+        }
+        if(check_page(string, INDIRECT_ADDRESSING)){
+            return 0;
+        }
+    }
+
+    if(check_external(string, ANY_ADDRESSING)){
+        if(check_external(string, DIRECT_ADDRESSING)){
+            return strtol(string + 1, NULL, 10);
+        }
+        if(check_external(string, INDIRECT_ADDRESSING)){
+            return 0;
+        }
+    }
+
+
+    return -1;
+}
+
+
+
 //arguments.c, returns ENUM for instruction type, returns ERROR if no match
 Assembler_Arguments get_instruction(char *string){
     if(strcasecmp("add", string) == 0)
@@ -748,4 +839,36 @@ Assembler_Arguments get_instruction(char *string){
 
 
     return ERROR;
+}
+
+
+
+// arguments.c
+int get_alu_opcode(char *string){
+    if(strcasecmp("add", string) == 0)
+        return 0;
+    if(strcasecmp("sub", string) == 0)
+        return 1;
+    if(strcasecmp("lls", string) == 0)
+        return 2;
+    if(strcasecmp("lrs", string) == 0)
+        return 3;
+    if(strcasecmp("ars", string) == 0)
+        return 4;
+    if(strcasecmp("or", string) == 0)
+        return 8;
+    if(strcasecmp("and", string) == 0)
+        return 9;
+    if(strcasecmp("xor", string) == 0)
+        return 10;
+    if(strcasecmp("nor", string) == 0)
+        return 5;
+    if(strcasecmp("nand", string) == 0)
+        return 6;
+    if(strcasecmp("xnor", string) == 0)
+        return 7;
+    if(strcasecmp("not", string) == 0)
+        return 5;
+    if(strcasecmp("cmp", string) == 0)
+        return 1;    
 }

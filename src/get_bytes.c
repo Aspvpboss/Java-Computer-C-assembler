@@ -7,6 +7,30 @@
 
 */
 
+
+
+// get_bytes.c
+int check_alu_special(char *string){
+    if(strcasecmp(string, "not") == 0){
+        return 1;
+    }
+    if(strcasecmp(string, "ars") == 0){
+        return 1;
+    }
+    if(strcasecmp(string, "llr") == 0){
+        return 1;
+    }
+    if(strcasecmp(string, "lls") == 0){
+        return 1;
+    }
+    if(strcasecmp(string, "cmp") == 0){
+        return 1;
+    }
+    return 0;
+}
+
+
+
 // get_bytes.c, returns bytes for line in .section_data
 int get_data_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOKENS, int c_line, Opcode_Type *opcode){
     switch(instruction){
@@ -131,6 +155,10 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             return -1;
 
         case(HALT):
+            if(MAX_TOKENS == 2 && check_byte_immediate(p_string[TOKEN_TWO])){
+                *opcode = HLT_DIRECT;
+                return p_string[TOKEN_TWO][0] - '0';             
+            }
             if(MAX_TOKENS == 1){
                 *opcode = HLT_DIRECT;
                 return 1;                
@@ -138,6 +166,10 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             return -1;
 
         case(NO_OP):
+            if(MAX_TOKENS == 2 && check_byte_immediate(p_string[TOKEN_TWO])){
+                *opcode = NOP_DIRECT;
+                return p_string[TOKEN_TWO][0] - '0';             
+            }
             if(MAX_TOKENS == 1){
                 *opcode = NOP_DIRECT;
                 return 1;                
@@ -148,6 +180,9 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
 
             //byte immediates (aka 4_bytes)          
             if(MAX_TOKENS == 5 && check_byte_immediate(p_string[TOKEN_FIVE])){
+                if(check_alu_special(p_string[0])){
+                    return -1;
+                }
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
                 char *tk_4 = get_macro(p_string[TOKEN_FOUR]);
@@ -156,7 +191,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return p_string[TOKEN_FIVE][0] - '0';
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING) && check_reg(tk_4, DIRECT_ADDRESSING)){
-                    *opcode = ALU_2_FLAG;
+                    *opcode = ALU_2;
                     return p_string[TOKEN_FIVE][0] - '0';
                 }
                 if(check_reg(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING) && check_immediate(tk_4, ANY_IMMEDIATE)){
@@ -164,12 +199,15 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return p_string[TOKEN_FIVE][0] - '0';
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING) && check_immediate(tk_4, ANY_IMMEDIATE)){
-                    *opcode = ALU_2_IMMEDIATE_FLAG;
+                    *opcode = ALU_2_IMMEDIATE;
                     return p_string[TOKEN_FIVE][0] - '0';
                 }
             }
             
             if(MAX_TOKENS == 4 && check_byte_immediate(p_string[TOKEN_FOUR])){
+                if(!(check_alu_special(p_string[0]))){
+                    return -1;
+                }
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
                 if(check_reg(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING)){
@@ -177,7 +215,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return p_string[TOKEN_FOUR][0] - '0';
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING)){
-                    *opcode = ALU_1_FLAG;
+                    *opcode = ALU_1;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }
                 if(check_reg(tk_2, DIRECT_ADDRESSING) && check_immediate(tk_3, ANY_IMMEDIATE)){
@@ -185,12 +223,15 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return p_string[TOKEN_FOUR][0] - '0';
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_immediate(tk_3, ANY_IMMEDIATE)){
-                    *opcode = ALU_1_IMMEDIATE_FLAG;
+                    *opcode = ALU_1_IMMEDIATE;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }
             }
             //normal bytes 
             if(MAX_TOKENS == 4){
+                if(check_alu_special(p_string[0])){
+                    return -1;
+                }
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
                 char *tk_4 = get_macro(p_string[TOKEN_FOUR]);
@@ -199,7 +240,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return 3;
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING) && check_reg(tk_4, DIRECT_ADDRESSING)){
-                    *opcode = ALU_2_FLAG;
+                    *opcode = ALU_2;
                     return 3;
                 }
                 if(check_reg(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING) && check_immediate(tk_4, ANY_IMMEDIATE)){
@@ -207,12 +248,15 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return 4;
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING) && check_immediate(tk_4, ANY_IMMEDIATE)){
-                    *opcode = ALU_2_IMMEDIATE_FLAG;
+                    *opcode = ALU_2_IMMEDIATE;
                     return 4;
                 }
             }
             
             if(MAX_TOKENS == 3){
+                if(!(check_alu_special(p_string[0]))){
+                    return -1;
+                }
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
                 if(check_reg(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING)){
@@ -220,7 +264,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return 3;
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_reg(tk_3, DIRECT_ADDRESSING)){
-                    *opcode = ALU_1_FLAG;
+                    *opcode = ALU_1;
                     return 3;
                 }
                 if(check_reg(tk_2, DIRECT_ADDRESSING) && check_immediate(tk_3, ANY_IMMEDIATE)){
@@ -228,7 +272,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return 4;
                 }
                 if(check_reg_flags(tk_2, DIRECT_ADDRESSING) && check_immediate(tk_3, ANY_IMMEDIATE)){
-                    *opcode = ALU_1_IMMEDIATE_FLAG;
+                    *opcode = ALU_1_IMMEDIATE;
                     return 4;
                 }
             }
