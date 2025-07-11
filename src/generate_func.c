@@ -293,3 +293,24 @@ int generate_rec(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_
 
     return 0;
 }    
+
+// generate data label 
+
+int generate_label_int(int opcode, int c_bytes, int total_bytes, char *tk_3){
+    if(check_label_colon_cache_page(tk_3)){
+        f.output_arrays[total_bytes] = strint(get_cache_page_address(tk_3));
+    } else{
+        f.output_arrays[total_bytes] = strint(get_big_immediate_value(tk_3));
+    }
+
+    return 0;
+}
+
+int generate_label_string(int opcode, int c_bytes, int total_bytes, char *tk_3){
+    int len = strlen(tk_3);
+    for(int i = 1; i < len - 1; i++){
+        f.output_arrays[total_bytes + i - 1] = strint(tk_3[i]);
+    }
+
+    return 0;
+}

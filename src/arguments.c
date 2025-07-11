@@ -42,7 +42,7 @@ int check_big_immediate(char *string, Immediate_Mode mode){
     regcomp(&bin_pattern, "^#0b[01]{1,10}$", REG_ICASE | REG_EXTENDED);
 
     regex_t hex_pattern;
-    regcomp(&hex_pattern, "^#0x([0-3][0-9a-fA-F]{1,2})$", REG_ICASE | REG_EXTENDED);
+    regcomp(&hex_pattern, "^#0x([0-3]?[0-9a-fA-F]{1,2})$", REG_ICASE | REG_EXTENDED);
 
 
     if(mode == DECIMAL_IMMEDIATE || mode == ANY_IMMEDIATE){
@@ -163,6 +163,10 @@ int check_immediate(char *string, Immediate_Mode mode){
         if(check_if_label_colon(dup_string)){
             return 1;
         }
+    }
+
+    if(string[0] = '#' && isprint(string[1])){
+        return 1;
     }
 
     regfree(&hex_pattern);
@@ -722,6 +726,10 @@ int get_big_immediate_value(char *string){
         char *dup = strdup(string);
         dup += 3;
         return strtol(dup, NULL, 16);
+    }
+
+    if(string[0] = '#' && isprint(string[1])){
+        return string[1];
     }
 
     return -1;

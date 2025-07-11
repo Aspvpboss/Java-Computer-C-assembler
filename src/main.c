@@ -41,7 +41,7 @@ int main(void){
         return 1;           
     } 
     printf("\n");
-
+    
     free_memory(&f, &t);
 
     printf("\n");

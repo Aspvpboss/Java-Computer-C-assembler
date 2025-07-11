@@ -26,3 +26,7 @@ int generate_xld_xst(int opcode, int c_bytes, int total_bytes, char *tk_2, char 
 // IO instructions
 int generate_snd(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3);
 int generate_rec(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3);
+
+// data labels
+int generate_label_int(int opcode, int c_bytes, int total_bytes, char *tk_3);
+int generate_label_string(int opcode, int c_bytes, int total_bytes, char *tk_3);

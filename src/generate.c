@@ -36,9 +36,13 @@ int get_binary(Opcode_Type opcode, char **p_string, int c_bytes, int total_bytes
 
         case(LABEL_STRING):
 
+            generate_label_string(opcode, c_bytes, total_bytes, tk_3);
+
             break;
 
         case(LABEL_INT):
+
+            generate_label_int(opcode, c_bytes, total_bytes, tk_3);
 
             break;
 

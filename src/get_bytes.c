@@ -73,11 +73,11 @@ int get_data_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                         return -1;
                     }
                     regfree(&pattern);
-                    *opcode = NONE;
+                    *opcode = LABEL_STRING;
                     return strlen(p_string[TOKEN_THREE]) - 2;
                 }
                 if(strcmp(".byte", p_string[TOKEN_TWO]) == 0 && check_immediate(p_string[TOKEN_THREE], ANY_IMMEDIATE)){
-                    *opcode = NONE;
+                    *opcode = LABEL_INT;
                     return 1;
                 }
                 if((strcmp(".byte", p_string[TOKEN_TWO]) == 0 && !(check_immediate(p_string[TOKEN_THREE], ANY_IMMEDIATE)))){
@@ -786,7 +786,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = JMP_DIRECT;
                     return p_string[TOKEN_THREE][0] - '0';
                 }   
-                if(check_reg(tk_2, INDIRECT_ADDRESSING)){
+                if(strcmp(tk_2, "ptr") == 0){
                     *opcode = JMP_INDIRECT_3;
                     return p_string[TOKEN_THREE][0] - '0';
                 }                        
@@ -797,7 +797,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = JMP_DIRECT;
                     return 3;
                 }   
-                if(check_reg(tk_2, INDIRECT_ADDRESSING)){
+                if(strcmp(tk_2, "ptr") == 0){
                     *opcode = JMP_INDIRECT_3;
                     return 1;
                 }             
@@ -812,11 +812,11 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = JIF_DIRECT;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }   
-                if(check_flags(tk_2) && check_reg(tk_3, INDIRECT_ADDRESSING)){
+                if(check_flags(tk_2) && strcmp(tk_2, "ptr") == 0){
                     *opcode = JIF_INDIRECT_3;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }      
-                if(check_reg(tk_2, INDIRECT_ADDRESSING) && check_if_label_colon(tk_3)){
+                if(strcmp(tk_2, "ptr") == 0 && check_if_label_colon(tk_3)){
                     *opcode = JIF_INDIRECT_2;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }                   
@@ -828,11 +828,11 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = JIF_DIRECT;
                     return 3;
                 }   
-                if(check_flags(tk_2) && check_reg(tk_3, INDIRECT_ADDRESSING)){
+                if(check_flags(tk_2) && strcmp(tk_2, "ptr") == 0){
                     *opcode = JIF_INDIRECT_3;
                     return 2;
                 }      
-                if(check_reg(tk_2, INDIRECT_ADDRESSING) && check_if_label_colon(tk_3)){
+                if(strcmp(tk_2, "ptr") == 0 && check_if_label_colon(tk_3)){
                     *opcode = JIF_INDIRECT_2;
                     return 3;
                 }          
@@ -846,7 +846,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = CAL_DIRECT;
                     return p_string[TOKEN_THREE][0] - '0';
                 }   
-                if(check_reg(tk_2, INDIRECT_ADDRESSING)){
+                if(strcmp(tk_2, "ptr") == 0){
                     *opcode = CAL_INDIRECT_3;
                     return p_string[TOKEN_THREE][0] - '0';
                 }                        
@@ -857,7 +857,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = CAL_DIRECT;
                     return 3;
                 }   
-                if(check_reg(tk_2, INDIRECT_ADDRESSING)){
+                if(strcmp(tk_2, "ptr") == 0){
                     *opcode = CAL_INDIRECT_3;
                     return 1;
                 }             
@@ -872,11 +872,11 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = JIF_DIRECT;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }   
-                if(check_flags(tk_2) && check_reg(tk_3, INDIRECT_ADDRESSING)){
+                if(check_flags(tk_2) && strcmp(tk_2, "ptr") == 0){
                     *opcode = JIF_INDIRECT_3;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }      
-                if(check_reg(tk_2, INDIRECT_ADDRESSING) && check_if_label_colon(tk_3)){
+                if(strcmp(tk_2, "ptr") == 0 && check_if_label_colon(tk_3)){
                     *opcode = JIF_INDIRECT_2;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }                   
@@ -888,11 +888,11 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     *opcode = JIF_DIRECT;
                     return 3;
                 }   
-                if(check_flags(tk_2) && check_reg(tk_3, INDIRECT_ADDRESSING)){
+                if(check_flags(tk_2) && strcmp(tk_2, "ptr") == 0){
                     *opcode = JIF_INDIRECT_3;
                     return 2;
                 }      
-                if(check_reg(tk_2, INDIRECT_ADDRESSING) && check_if_label_colon(tk_3)){
+                if(strcmp(tk_2, "ptr") == 0 && check_if_label_colon(tk_3)){
                     *opcode = JIF_INDIRECT_2;
                     return 3;
                 }          
