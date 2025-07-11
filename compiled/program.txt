@@ -3,7 +3,14 @@ at #0b0000000000
 
 .section_text
 
-    ;not r5 #0b01010101
-    cmp r3 #0b01010101
+    main:
+        
+        rec c63 io7
+
+
+
+at #0b1110000101
+
+    fart:
 
 sizeof ALL

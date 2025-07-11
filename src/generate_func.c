@@ -1,5 +1,6 @@
 #include "generate_func.h"
 
+char *tmp;
 
 char* strint(int num){
     return integer_binary_converter(num);
@@ -13,8 +14,10 @@ char* generate_opcode(int num_bytes, int opcode){
     return strint(opcode);
 }
 
+// AOP functions
+
 int generate_alu_2(int opcode, int c_bytes, int total_bytes, char **p_string, char *tk_2, char *tk_3, char *tk_4){
-    char *tmp;
+    
     if(c_bytes >= 1){
         tmp = generate_opcode(c_bytes, opcode);
         f.output_arrays[total_bytes] = tmp;
@@ -40,7 +43,7 @@ int generate_alu_2(int opcode, int c_bytes, int total_bytes, char **p_string, ch
 } 
 
 int generate_alu_2_immediate(int opcode, int c_bytes, int total_bytes, char **p_string, char *tk_2, char *tk_3, char *tk_4){
-    char *tmp;
+    
     if(c_bytes >= 1){
         tmp = generate_opcode(c_bytes, opcode);
         f.output_arrays[total_bytes] = tmp;
@@ -68,7 +71,7 @@ int generate_alu_2_immediate(int opcode, int c_bytes, int total_bytes, char **p_
 } 
 
 int generate_alu_1(int opcode, int c_bytes, int total_bytes, char **p_string, char *tk_2, char *tk_3){
-    char *tmp;
+    
     if(c_bytes >= 1){
         tmp = generate_opcode(c_bytes, opcode);
         f.output_arrays[total_bytes] = tmp;
@@ -110,7 +113,7 @@ int generate_alu_1(int opcode, int c_bytes, int total_bytes, char **p_string, ch
 } 
 
 int generate_alu_1_immediate(int opcode, int c_bytes, int total_bytes, char **p_string, char *tk_2, char *tk_3){
-    char *tmp;
+    
     if(c_bytes >= 1){
         tmp = generate_opcode(c_bytes, opcode);
         f.output_arrays[total_bytes] = tmp;
@@ -146,3 +149,147 @@ int generate_alu_1_immediate(int opcode, int c_bytes, int total_bytes, char **p_
     }    
     return 0;
 } 
+
+
+// MOV functions
+
+int generate_ldi(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3){
+
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 3){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 2] = tmp;    
+    }
+    if(c_bytes >= 4){
+        f.output_arrays[total_bytes + 3] = strint(get_big_immediate_value(tk_3));
+    }
+    return 0;
+}
+
+int generate_rtr_ctc_rtc_ctr(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_3));
+        f.output_arrays[total_bytes + 1] = tmp;    
+    }
+    if(c_bytes >= 3){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 2] = tmp;    
+    }
+    return 0;
+}
+
+int generate_rtp(int opcode, int c_bytes, int total_bytes, char *tk_2){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 1] = tmp;    
+    }
+
+    return 0;
+}
+
+// data stack instructions
+
+int generate_psh(int opcode, int c_bytes, int total_bytes, char *tk_2){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 1] = tmp;    
+    }    
+
+    return 0;
+}
+
+int generate_pop(int opcode, int c_bytes, int total_bytes, char *tk_2){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 2] = tmp;    
+    }    
+
+    return 0;
+}
+
+// RAM instructions
+
+int generate_cld_cst(int opcode, int c_bytes, int total_bytes, char *tk_2){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 1] = tmp;    
+    }    
+
+    return 0;
+}
+
+int generate_xld_xst(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 1] = tmp;    
+    }    
+    if(c_bytes >= 3){
+        tmp = strint(get_argument_value(tk_3));
+        f.output_arrays[total_bytes + 2] = tmp;    
+    }
+
+    return 0;
+}
+
+// IO instructions
+
+int generate_snd(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 2){
+        tmp = strint(get_argument_value(tk_3));
+        f.output_arrays[total_bytes + 1] = tmp;    
+    }    
+    if(c_bytes >= 4){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 3] = tmp;    
+    }
+
+    return 0;
+}    
+
+int generate_rec(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3){
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+    if(c_bytes >= 3){
+        tmp = strint(get_argument_value(tk_2));
+        f.output_arrays[total_bytes + 2] = tmp;    
+    }    
+    if(c_bytes >= 4){
+        tmp = strint(get_argument_value(tk_3));
+        f.output_arrays[total_bytes + 3] = tmp;    
+    }
+
+    return 0;
+}    

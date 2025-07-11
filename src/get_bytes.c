@@ -537,20 +537,9 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
 
         case(CACHE_LOAD):
             
-
             if(MAX_TOKENS == 3 && check_byte_immediate(p_string[TOKEN_THREE])){
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 if(check_page(tk_2, DIRECT_ADDRESSING)){
-                    *opcode = CLD_DIRECT;   
-                    return p_string[TOKEN_THREE][0] - '0';
-                }
-
-                if(check_immediate(tk_2, CACHE_ADDRESS)){
-                    *opcode = CLD_DIRECT;   
-                    return p_string[TOKEN_THREE][0] - '0';
-                }
-
-                if(check_immediate(tk_2, PAGE_ADDRESS)){
                     *opcode = CLD_DIRECT;   
                     return p_string[TOKEN_THREE][0] - '0';
                 }
@@ -564,16 +553,6 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             if(MAX_TOKENS == 2){
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 if(check_page(tk_2, DIRECT_ADDRESSING)){
-                    *opcode = CLD_DIRECT;   
-                    return 2; 
-                }
-
-                if(check_immediate(tk_2, CACHE_ADDRESS)){
-                    *opcode = CLD_DIRECT;   
-                    return 2; 
-                }
-
-                if(check_immediate(tk_2, PAGE_ADDRESS)){
                     *opcode = CLD_DIRECT;   
                     return 2; 
                 }
@@ -595,15 +574,6 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                     return p_string[TOKEN_THREE][0] - '0';
                 }
 
-                if(check_immediate(tk_2, CACHE_ADDRESS)){
-                    *opcode = CST_DIRECT;   
-                    return p_string[TOKEN_THREE][0] - '0';
-                }
-
-                if(check_immediate(tk_2, PAGE_ADDRESS)){
-                    *opcode = CST_DIRECT;   
-                    return p_string[TOKEN_THREE][0] - '0';
-                }
                 if(check_page(tk_2, INDIRECT_ADDRESSING)){
                     *opcode = CST_INDIRECT_2;    
                     return p_string[TOKEN_THREE][0] - '0';
@@ -613,16 +583,6 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             if(MAX_TOKENS == 2){
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 if(check_page(tk_2, DIRECT_ADDRESSING)){
-                    *opcode = CST_DIRECT;   
-                    return 2; 
-                }
-
-                if(check_immediate(tk_2, CACHE_ADDRESS)){
-                    *opcode = CST_DIRECT;   
-                    return 2; 
-                }
-
-                if(check_immediate(tk_2, PAGE_ADDRESS)){
                     *opcode = CST_DIRECT;   
                     return 2; 
                 }

@@ -84,165 +84,247 @@ int get_binary(Opcode_Type opcode, char **p_string, int c_bytes, int total_bytes
 
         case(LDI_DIRECT):
 
+            generate_ldi(15, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(LDI_INDIRECT_3):
+
+            generate_ldi(16, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(CTC_DIRECT):
 
+            generate_rtr_ctc_rtc_ctr(17, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(CTC_INDIRECT_2):
+
+            generate_rtr_ctc_rtc_ctr(18, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(CTC_INDIRECT_3):
 
+            generate_rtr_ctc_rtc_ctr(19, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(RTR_DIRECT):
+
+            generate_rtr_ctc_rtc_ctr(20, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(RTR_INDIRECT_2):
 
+            generate_rtr_ctc_rtc_ctr(21, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(RTR_INDIRECT_3):
+
+            generate_rtr_ctc_rtc_ctr(22, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(RTP_DIRECT):
 
+            generate_rtp(23, c_bytes, total_bytes, tk_3);
+
             break;
 
         case(RTP_INDIRECT_2):
+
+            generate_rtp(24, c_bytes, total_bytes, tk_3);
 
             break;
 
         case(CTR_DIRECT):
 
+            generate_rtr_ctc_rtc_ctr(25, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(CTR_INDIRECT_2):
+
+            generate_rtr_ctc_rtc_ctr(26, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(CTR_INDIRECT_3):
 
+            generate_rtr_ctc_rtc_ctr(27, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(CTR_INDEX):
+
+            generate_rtr_ctc_rtc_ctr(28, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(RTC_DIRECT):
 
+            generate_rtr_ctc_rtc_ctr(29, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(RTC_INDIRECT_2):
+
+            generate_rtr_ctc_rtc_ctr(30, c_bytes, total_bytes, tk_2, tk_3);    
 
             break;
 
         case(RTC_INDIRECT_3):
 
+            generate_rtr_ctc_rtc_ctr(31, c_bytes, total_bytes, tk_2, tk_3);    
+
             break;
 
         case(RTC_INDEX):
+
+            generate_rtr_ctc_rtc_ctr(32, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(PSH_DIRECT):
 
+            generate_psh(33, c_bytes, total_bytes, tk_2);
+
             break;
 
         case(PSH_INDIRECT_2):
+
+            generate_psh(34, c_bytes, total_bytes, tk_2);
 
             break;
 
         case(POP_DIRECT):
 
+            generate_pop(35, c_bytes, total_bytes, tk_2);
+
             break;
 
         case(POP_INDIRECT_3):
+
+            generate_pop(36, c_bytes, total_bytes, tk_2);
 
             break;
 
         case(CLD_DIRECT):
 
+            generate_cld_cst(37, c_bytes, total_bytes, tk_2);
+
             break;
 
         case(CLD_INDIRECT_2):
+
+            generate_cld_cst(38, c_bytes, total_bytes, tk_2);
 
             break;
 
         case(CST_DIRECT):
 
+            generate_cld_cst(39, c_bytes, total_bytes, tk_2);
+
             break;
 
         case(CST_INDIRECT_2):
+
+            generate_cld_cst(40, c_bytes, total_bytes, tk_2);
 
             break;
 
         case(XLD_DIRECT):
 
+            generate_xld_xst(41, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(XLD_INDIRECT_2):
+
+            generate_xld_xst(42, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(XLD_INDIRECT_3):
 
+            generate_xld_xst(43, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(XST_DIRECT):
+
+            generate_xld_xst(44, c_bytes, total_bytes, tk_3, tk_2);
 
             break;
 
         case(XST_INDIRECT_2):
 
+            generate_xld_xst(45, c_bytes, total_bytes, tk_3, tk_2);
+
             break;
 
         case(XST_INDIRECT_3):
+
+            generate_xld_xst(46, c_bytes, total_bytes, tk_3, tk_2);
 
             break;
 
         case(SND_DIRECT):
 
+            generate_snd(47, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(SND_INDIRECT_2):
+
+            generate_snd(48, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(SND_INDEX):
 
+            generate_snd(49, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(REC_DIRECT):
+
+            generate_rec(50, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(REC_INDIRECT_3):
 
+            generate_rec(51, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(REC_INDEX):
+
+            generate_rec(52, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(WRE_DIRECT):
 
+            generate_rec(53, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(WRE_INDIRECT_3):
 
+            generate_rec(54, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(WRE_INDEX):
+
+            generate_rec(55, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 

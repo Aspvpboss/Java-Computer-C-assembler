@@ -156,6 +156,15 @@ int check_immediate(char *string, Immediate_Mode mode){
         }
     }
 
+    if(string[0] == '=' && (mode == ANY_IMMEDIATE)){
+        char *dup_string = strdup(string);
+        dup_string++;
+
+        if(check_if_label_colon(dup_string)){
+            return 1;
+        }
+    }
+
     regfree(&hex_pattern);
     regfree(&dec_pattern);
     regfree(&bin_pattern);
@@ -389,6 +398,15 @@ int check_page(char *string, Address_Mode mode){
         }
     }
 
+    if(string[0] == '+' && (mode == DIRECT_ADDRESSING || mode == ANY_IMMEDIATE)){
+        char *dup_string = strdup(string);
+        dup_string++;
+
+        if(check_if_label_colon(dup_string)){
+            return 1;
+        }
+    }
+
     regfree(&direct_pattern);
     regfree(&indirect_pattern);
 
@@ -482,7 +500,7 @@ int check_if_label_colon(char *string){
 //argument.c, returns 1 if label exists without the colon and with '+' or '-' or '&', returns 0 if not
 int check_label_colon_cache_page(char *string){
     
-    if(!(string[0] == '&' || string[0] == '-' || string[0] == '+')){
+    if(!(string[0] == '&' || string[0] == '-' || string[0] == '+' || string[0] == '=')){
         return 0;
     }
     char *dup_string = strdup(string);
@@ -620,6 +638,25 @@ int get_cache_page_address(char *string){
         }
     }
 
+    if(string[0] == '='){
+        char *dup_string = strdup(string);
+        dup_string++;
+
+        for(int i = 0; i < l.num_labels; i++){
+            const char *label_with_colon = l.label_strings[i];
+            size_t length = strlen(l.label_strings[i]);
+            if(length > 0 && label_with_colon[length - 1] == ':'){
+                if(strncmp(dup_string, label_with_colon, length - 1) == 0 && dup_string[length - 1] == '\0'){
+                    int upper_two = l.label_addresses[i];
+                    int bottom_eight = upper_two;
+                    upper_two >>= 8;
+                    bottom_eight -= (upper_two << 8); 
+                    return bottom_eight;                    
+                }
+            }            
+        }        
+    }
+
     return -1;
 }
 
@@ -665,6 +702,11 @@ char* integer_binary_converter(int integer){
 
 //arguments.c, returns immediate value, returns -1 if error
 int get_big_immediate_value(char *string){
+    int label_immediate = get_cache_page_address(string);
+    if(!(label_immediate == -1)){
+        return label_immediate;
+    }
+
 
     if(check_big_immediate(string, DECIMAL_IMMEDIATE)){
         char *dup = strdup(string);
@@ -747,6 +789,10 @@ int get_argument_value(char *string){
         if(check_external(string, INDIRECT_ADDRESSING)){
             return 0;
         }
+    }
+
+    if(check_io(string)){
+        return string[2] - '0';
     }
 
 
