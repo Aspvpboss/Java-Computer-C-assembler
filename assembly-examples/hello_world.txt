@@ -10,7 +10,7 @@ at #0b0000000000
 .section_text
 
 
-        set NULL_TERM #0
+        set NULL_TERM #'@'
 
 
         init:
@@ -30,7 +30,6 @@ at #0b0000000000
 
         quit:
         
-            mov r0 -main
             snd io1 c0
             hlt
 

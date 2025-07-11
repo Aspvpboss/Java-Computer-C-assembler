@@ -31,7 +31,7 @@ int check_big_immediate(char *string, Immediate_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_immediate()\n");
-        return -1;
+        return 0;
     }
 
     int result;
@@ -91,7 +91,7 @@ int check_immediate(char *string, Immediate_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_immediate()\n");
-        return -1;
+        return 0;
     }
 
     int result;
@@ -165,7 +165,7 @@ int check_immediate(char *string, Immediate_Mode mode){
         }
     }
 
-    if(string[0] = '#' && isprint(string[1])){
+    if(string[0] == '#' && string[1] == '\'' && isprint(string[2]) && string[3] == '\''){
         return 1;
     }
 
@@ -181,7 +181,7 @@ int check_cache(char *string, Address_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_cache()\n");
-        return -1;
+        return 0;
     }
 
     regex_t direct_pattern;
@@ -250,11 +250,11 @@ int check_reg(char *string, Address_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_register()\n");
-        return -1;
+        return 0;
     }
     if(mode == INDEX_ADDRESSING){
         printf("invalid Address_Mode given to check_register()\n");
-        return -1;
+        return 0;
     }
 
     regex_t direct_pattern;
@@ -299,11 +299,11 @@ int check_reg_flags(char *string, Address_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_register()\n");
-        return -1;
+        return 0;
     }
     if(mode == INDEX_ADDRESSING){
         printf("invalid Address_Mode given to check_register()\n");
-        return -1;
+        return 0;
     }
 
     regex_t direct_pattern;
@@ -346,7 +346,7 @@ int check_reg_flags(char *string, Address_Mode mode){
 int check_io(char *string){
     if(string == NULL){
         printf("bad string given for 'check_io()\n");
-        return -1;
+        return 0;
     }    
     regex_t pattern;
     regcomp(&pattern, "^io[0-7]$", REG_ICASE | REG_EXTENDED);    
@@ -367,11 +367,11 @@ int check_page(char *string, Address_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_page()\n");
-        return -1;
+        return 0;
     }
     if(mode == INDEX_ADDRESSING){
         printf("invalid Address_Mode given to check_page()\n");
-        return -1;
+        return 0;
     }
 
     regex_t direct_pattern;
@@ -425,11 +425,11 @@ int check_external(char *string, Address_Mode mode){
 
     if(string == NULL){
         printf("bad string given for 'check_external()\n");
-        return -1;
+        return 0;
     }
     if(mode == INDEX_ADDRESSING){
         printf("invalid Address_Mode given to check_external()\n");
-        return -1;
+        return 0;
     }
 
     regex_t direct_pattern;
@@ -570,6 +570,59 @@ int check_flags(char *string){
         return 1;
     }
     return 0;
+}
+
+
+
+//arguments.c, returns 1 if string a flag
+int get_flags_value(char *string){
+    if(strcmp(string, "ptr") == 0){
+        return 0;
+    }
+    if(strcmp(string, "zero") == 0){
+        return 0;
+    }
+    if(strcmp(string, "car") == 0){
+        return 1;
+    }
+    if(strcmp(string, "over") == 0){
+        return 2;
+    }
+    if(strcmp(string, "neg") == 0){
+        return 3;
+    }
+    if(strcmp(string, "==") == 0){
+        return 4;
+    }
+    if(strcmp(string, "!=") == 0){
+        return 5;
+    }
+    if(strcmp(string, "<<") == 0){
+        return 6;
+    }
+    if(strcmp(string, ">>") == 0){
+        return 7;
+    }
+    if(strcmp(string, "<=") == 0){
+        return 8;
+    }
+    if(strcmp(string, ">=") == 0){
+        return 9;
+    }
+    if(strcmp(string, "S<<") == 0){
+        return 10;
+    }
+    if(strcmp(string, "S>>") == 0){
+        return 11;
+    }
+    if(strcmp(string, "S<=") == 0){
+        return 12;
+    }
+    if(strcmp(string, "S>=") == 0){
+        return 13;
+    }
+
+    return -1;
 }
 
 
@@ -728,8 +781,8 @@ int get_big_immediate_value(char *string){
         return strtol(dup, NULL, 16);
     }
 
-    if(string[0] = '#' && isprint(string[1])){
-        return string[1];
+    if(string[0] = '#' && string[1] == '\'' && isprint(string[2]) && string[3] == '\''){
+        return string[2];
     }
 
     return -1;

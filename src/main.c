@@ -7,7 +7,7 @@ Set_Vars set;
 
 
 int main(void){  
-    
+
     if(init_files(&f, &t)){        
         printf("ERROR_FUNCTION: init_files\n"); 
         printf("unsuccessful assembled\n");

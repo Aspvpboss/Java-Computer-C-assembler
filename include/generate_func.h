@@ -30,3 +30,7 @@ int generate_rec(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_
 // data labels
 int generate_label_int(int opcode, int c_bytes, int total_bytes, char *tk_3);
 int generate_label_string(int opcode, int c_bytes, int total_bytes, char *tk_3);
+
+// control flow
+int generate_jmp(int opcode, int c_bytes, int total_bytes, char *tk_2);
+int generate_jif(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3);

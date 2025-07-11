@@ -314,3 +314,44 @@ int generate_label_string(int opcode, int c_bytes, int total_bytes, char *tk_3){
 
     return 0;
 }
+
+// control flow
+
+int generate_jmp(int opcode, int c_bytes, int total_bytes, char *tk_2){
+
+    int upper_two = 0;
+    int bottom_eight = 0;
+
+    if(c_bytes >= 1){
+        tmp = generate_opcode(c_bytes, opcode);
+        f.output_arrays[total_bytes] = tmp;        
+    }
+
+
+    if(c_bytes >= 3){
+        bottom_eight = get_label_address_colon(tk_2);
+        upper_two = bottom_eight;
+        upper_two >>= 8;
+        bottom_eight -= (upper_two << 8); 
+        tmp = strint(bottom_eight);
+        f.output_arrays[total_bytes + 2] = tmp;  
+    }      
+
+    if(c_bytes >= 4){
+        tmp = strint(upper_two);
+        f.output_arrays[total_bytes + 3] = tmp;              
+    }
+
+    return 0;
+}
+
+int generate_jif(int opcode, int c_bytes, int total_bytes, char *tk_2, char *tk_3){
+
+    generate_jmp(opcode, c_bytes, total_bytes, tk_3);
+    if(c_bytes >= 2){
+        tmp = strint(get_flags_value(tk_2));
+        f.output_arrays[total_bytes + 1] = tmp;
+    }
+
+    return 0;
+}

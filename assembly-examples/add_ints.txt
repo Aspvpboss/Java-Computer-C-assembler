@@ -1,4 +1,3 @@
-TOP:
 
 .section_text
 
@@ -18,6 +17,5 @@ TOP:
         quit:
             hlt
 
-sizeof TOP BOTTOM
+sizeof LABELS
 
-BOTTOM:

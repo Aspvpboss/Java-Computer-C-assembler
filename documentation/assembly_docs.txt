@@ -41,12 +41,13 @@ Byte immediates: Use byte immediate to set the amount of bytes for an instructio
         mov r0 c0 4_bytes    ; 4 byte for the instruction
 
 
-Immediates: there are 4 types of immediates; decimal, hexadecimal, binary, and labels. Immediates loaded into the computer are 1 byte.
-    For labels, start label with '+' for page immediate for the label (upper 4-bits) , use '&' with cache immediate for labels (lower 6-bits).
+Immediates: there are 4 types of immediates; decimal, hexadecimal, binary, labels, and characters. Immediates loaded into the computer are 1 byte. For labels, start label with '+' 
+    for page immediate for the label (upper 4-bits) , use '&' with cache immediate for labels (lower 6-bits). The character immediate uses 7-bit ascii characters
 
         #21        ; decimal
         #0x1a      ; hexadecimal
         #0b11010   ; binary
+        #'c'       ; character
 
         +label     ; page address for label
         &label     ; cache address for label.

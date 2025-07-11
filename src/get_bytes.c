@@ -383,6 +383,8 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
 
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
+                
+
 
                 //LDI
                 if(check_reg(tk_2, ANY_ADDRESSING) && check_immediate(tk_3, ANY_IMMEDIATE)){
@@ -396,6 +398,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                         return 4;
                     }
                 }
+
                 //CTC
                 if(check_cache(tk_2, ANY_ADDRESSING) && check_cache(tk_3, ANY_ADDRESSING)){
 

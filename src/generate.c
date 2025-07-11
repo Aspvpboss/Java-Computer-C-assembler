@@ -15,16 +15,16 @@ int get_binary(Opcode_Type opcode, char **p_string, int c_bytes, int total_bytes
         return 1;
     }
 
-
+    
 
     if(t.num_tokens[c_line] >= 2){
-        tk_2 = p_string[TOKEN_TWO];
+        tk_2 = get_macro(p_string[TOKEN_TWO]);
     }
     if(t.num_tokens[c_line] >= 3){
-        tk_3 = p_string[TOKEN_THREE];
+        tk_3 = get_macro(p_string[TOKEN_THREE]);
     }
     if(t.num_tokens[c_line] >= 4){
-        tk_4 = p_string[TOKEN_FOUR];
+        tk_4 = get_macro(p_string[TOKEN_FOUR]);
     }
 
 
@@ -334,45 +334,70 @@ int get_binary(Opcode_Type opcode, char **p_string, int c_bytes, int total_bytes
 
         case(JMP_DIRECT):
         
+            generate_jmp(4, c_bytes, total_bytes, tk_2);
+
             break;
 
         case(JMP_INDIRECT_3):
+
+            generate_jmp(5, c_bytes, total_bytes, tk_2);
 
             break;
 
         case(JIF_DIRECT):
 
+            generate_jif(6, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(JIF_INDIRECT_2):
+
+            generate_jif(7, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(JIF_INDIRECT_3):
 
+            generate_jif(8, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(CAL_DIRECT):
+
+            generate_jmp(9, c_bytes, total_bytes, tk_2);
 
             break;
 
         case(CAL_INDIRECT_3):
 
+            generate_jmp(10, c_bytes, total_bytes, tk_2);
+
             break;
 
         case(CIF_DIRECT):
+
+            generate_jif(11, c_bytes, total_bytes, tk_2, tk_3);
 
             break;
 
         case(CIF_INDIRECT_2):
 
+            generate_jif(12, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(CIF_INDIRECT_3):
 
+            generate_jif(13, c_bytes, total_bytes, tk_2, tk_3);
+
             break;
 
         case(RET):
+
+            if(c_bytes >= 1){
+                tmp = generate_opcode(c_bytes, 14);
+                f.output_arrays[total_bytes] = tmp;        
+            }
 
             break;
     }
@@ -407,7 +432,7 @@ int generate_binary(){
 
 
 
-int print_binary(){
+int print_output(){
     for(int i = 0; i < MAX_BYTES; i++){
         fprintf(f.file_out, "%s\n", f.output_arrays[i]);
     }
@@ -423,8 +448,8 @@ int generate(){
         return 1;
     }
 
-    if(print_binary()){
-        printf("ERROR: print_binary()\n");
+    if(print_output()){
+        printf("ERROR: print_output()\n");
         return 1;        
     }
 

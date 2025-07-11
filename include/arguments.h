@@ -23,5 +23,7 @@ int get_cache_page_address(char *string);
 int get_big_immediate_value(char *string);
 int get_argument_value(char *string);
 int get_alu_opcode(char *string);
+int get_flags_value(char *string);
+
 Assembler_Arguments get_instruction(char *string);
 char* integer_binary_converter(int integer);
