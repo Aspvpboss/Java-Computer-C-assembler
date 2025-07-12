@@ -43,7 +43,7 @@ int get_data_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             return -1;
 
         case(AT_ADDRESS):
-            if(MAX_TOKENS == 2){
+            if(MAX_TOKENS == 2 && check_big_immediate(p_string[TOKEN_TWO], ANY_IMMEDIATE)){
                 *opcode = NONE;
                 return 0;
             }
@@ -141,7 +141,7 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             return -1;
 
         case(AT_ADDRESS):
-            if(MAX_TOKENS == 2){
+            if(MAX_TOKENS == 2 && check_big_immediate(p_string[TOKEN_TWO], ANY_IMMEDIATE)){
                 *opcode = NONE;
                 return 0;                
             }
