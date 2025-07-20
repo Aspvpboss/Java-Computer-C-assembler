@@ -56,6 +56,20 @@ int get_data_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             }
             return -1;
 
+        case(GENERATE_BIN):
+            if(MAX_TOKENS == 1){
+                *opcode = NONE;
+                f.output_binary = 1;
+                return 0;
+            }
+
+        case(GENERATE_HEX):
+            if(MAX_TOKENS == 1){
+                *opcode = NONE;
+                f.output_binary = 0;
+                return 0;
+            }
+
         case(LABEL):
             
             if(MAX_TOKENS == 1){
@@ -101,9 +115,9 @@ int get_data_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             }
             
         default:
-
             return -1;
     }
+    return -1;
 }
 
 
@@ -153,6 +167,20 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                 return 0;                
             }
             return -1;
+
+        case(GENERATE_BIN):
+            if(MAX_TOKENS == 1){
+                *opcode = NONE;
+                f.output_binary = 1;
+                return 0;
+            }
+
+        case(GENERATE_HEX):
+            if(MAX_TOKENS == 1){
+                *opcode = NONE;
+                f.output_binary = 0;
+                return 0;
+            }
 
         case(HALT):
             if(MAX_TOKENS == 2 && check_byte_immediate(p_string[TOKEN_TWO])){
@@ -913,4 +941,5 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
             return -1;
 
     }
+    return -1;
 }

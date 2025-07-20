@@ -1,77 +1,43 @@
 
-.section_text
+
+.section_data
+at #0b0000000000
+
     
-    ; variables
-    set ball_x r0
-    set ball_y r1
-    set flag_x *r0
-    set flag_y *r1
-    set x_speed r2
-    set y_speed r3
 
-    ; constants
-    set X_SCREEN_MAX #15
-    set X_SPEED_POS #1
-    set X_SPEED_NEG #255
+    VARS:                                
 
-    set Y_SCREEN_MAX #15
-    set Y_SPEED_POS #1
-    set Y_SPEED_NEG #255
+        hello_world: .ascii "Hello|World@"   
+    
 
+.section_text
 
-    ; io 
-    set x_screen_io io0
-    set y_screen_io io1
-    set set_screen io2
+    generate_hex
 
+        set NULL_TERM #'@'
 
-    at #0b0000000000
 
         init:
-            mov ball_x #0
-            mov ball_y #2
-            mov x_speed X_SPEED_POS
-            mov y_speed Y_SPEED_POS
+
+            cld +VARS                           ; + meaning use page address aka 0b1100 (upper 4 bits)
+            mov r0 &hello_world                 ; - meaning the cache address aka 0b000000 (lower 6 bits)
+            mov ptr r0
 
         main:
-            ;set screen
-            mov c0 ball_x
-            snd x_screen_io c0
-            mov c0 ball_y
-            snd y_screen_io c0
-            snd set_screen c0  
+        
+            mov r1 c{r0}
+            cmp r1 NULL_TERM
+            jif == quit 
+            snd io0 c{r0}
+            add r0 r0 #1
+            jmp main
 
-            add flag_x ball_x x_speed
-            cif neg x_neg 
-            cmp ball_x X_SCREEN_MAX
-            cif >> x_gre
+        quit:
+        
+            snd io1 c0
+            hlt
 
-            add flag_y ball_y y_speed
-            cif neg y_neg 
-            cmp ball_y Y_SCREEN_MAX
-            cif >> y_gre
-            
-            jmp main  
 
-    at #0b0001000000
 
-        x_neg:
-            mov ball_x #0
-            mov x_speed X_SPEED_POS
-            ret
-            
-        x_gre:
-            mov ball_x X_SCREEN_MAX
-            mov x_speed X_SPEED_NEG
-            ret
-            
-        y_neg:
-            mov ball_y #0
-            mov y_speed Y_SPEED_POS
-            ret
-            
-        y_gre:
-            mov ball_y Y_SCREEN_MAX
-            mov y_speed Y_SPEED_NEG
-            ret
+sizeof ALL
 

@@ -440,8 +440,28 @@ int print_output(){
 }
 
 
+int generate_init(){
+    if(f.output_binary){
+        for(int i = 0; i < MAX_BYTES; i++){
+            f.output_arrays[i] = strdup("00000000");
+        }
+    }
+    if(!(f.output_binary)){
+        for(int i = 0; i < MAX_BYTES; i++){
+            f.output_arrays[i] = strdup("00");
+        }
+    }
+
+    return 0;
+}
+
+
 
 int generate(){
+
+    if(generate_init()){
+
+    }
 
     if(generate_binary()){
         printf("ERROR: generate_binary()\n");

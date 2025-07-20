@@ -3,7 +3,12 @@
 char *tmp;
 
 char* strint(int num){
-    return integer_binary_converter(num);
+    if(f.output_binary){
+        return integer_binary_converter(num);
+    }
+    if(!(f.output_binary)){
+        return integer_hex_converter(num);
+    }
 }
 
 

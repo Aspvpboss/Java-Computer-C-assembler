@@ -27,3 +27,4 @@ int get_flags_value(char *string);
 
 Assembler_Arguments get_instruction(char *string);
 char* integer_binary_converter(int integer);
+char* integer_hex_converter(int integer);

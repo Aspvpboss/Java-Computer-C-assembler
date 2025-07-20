@@ -20,6 +20,8 @@ Directives:
     .section_data
     .section_text
     ;comments
+    generate_bin
+    generate_hex
 
     labels:
     +labels

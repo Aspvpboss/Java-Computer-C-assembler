@@ -1,7 +1,8 @@
 
 
 .section_text
-    
+    generate_hex
+
     ; variables
     set ball_x r0
     set ball_y r1

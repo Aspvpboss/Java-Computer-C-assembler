@@ -5,10 +5,9 @@
 int init_files(File_Info *f, Token_Info *t){
 
     f->file_array_size = 70;
-    
+    f->output_binary = 1;
     f->file_in = fopen("program.txt", "r");
     f->file_out = fopen("output.txt", "w");
-
 
 
     if(f->file_in == NULL){
@@ -21,11 +20,6 @@ int init_files(File_Info *f, Token_Info *t){
     }
 
     f->output_arrays = malloc(sizeof(char*) * MAX_BYTES);
-    for(int i = 0; i < MAX_BYTES; i++){
-        f->output_arrays[i] = strdup("00000000");
-    }
-
-
 
     //lines in program.txt
     f->file_lines = 0;

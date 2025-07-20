@@ -1,15 +1,18 @@
 
 .section_text
+    generate_hex
 
     at #0b0000000000
 
         init:
+
             wre c0 io0
             mov r0 c0
             wre c1 io0
             mov r1 c1
 
         main:
+        
             add r2 r0 r1
             mov c2 r2
             snd io0 c2

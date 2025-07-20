@@ -719,6 +719,36 @@ int get_cache_page_address(char *string){
 
 
 
+//arguments.c
+char* integer_hex_converter(int integer){
+
+    if(integer < 0){
+        return NULL;
+    }
+
+    if(integer < 256){
+        char *hex_string = malloc(sizeof(char) * 3);
+        memset(hex_string, '0', sizeof(char) * 3);
+        int rem;
+
+        for(int i = 1; integer > 0; i--){
+            rem = integer % 16;
+            if(rem < 10)
+                hex_string[i] = rem + '0';
+            else
+                hex_string[i] = rem - 10 + 'a';
+            integer /= 16;
+        }
+
+        hex_string[2] = '\0';
+        return hex_string;
+    }
+
+    return NULL;    
+}
+
+
+
 //arguments.c, returns char* for arrays of binary, returns NULL if error, must free output char*
 char* integer_binary_converter(int integer){
 
@@ -792,7 +822,6 @@ int get_big_immediate_value(char *string){
 
 //arguments.c, returns value of an arguments, aka r0 would return 0
 int get_argument_value(char *string){
-
 
     if(check_label_colon_cache_page(string)){
         return get_cache_page_address(string);
@@ -934,6 +963,10 @@ Assembler_Arguments get_instruction(char *string){
         return SECTION_TEXT;
     if(strcasecmp("sizeof", string) == 0)
         return SIZEOF;
+    if(strcasecmp("generate_bin", string) == 0)
+        return GENERATE_BIN;
+    if(strcasecmp("generate_hex", string) == 0)
+        return GENERATE_HEX;
 
     regex_t pattern;
     regcomp(&pattern, "^(\\w*):$", REG_ICASE | REG_EXTENDED);

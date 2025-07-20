@@ -170,6 +170,12 @@ Opcodes: an opcodes lettercase doesn't throw a syntax error, as long as it's spe
     ADD r0 r0 r0
 
 
+Generated output: you can either generate binary or hex as an output, use 'generate_bin' or 'generate_hex' within a 'section_data' or 'section_text',
+    by default it assembles binary
+
+    generate_bin
+    generate_hex
+
 
 AOP (ALU operation) opcode:
 

@@ -87,6 +87,8 @@ typedef enum{
     SET_CONSTANT,
     SECTION_DATA,
     SECTION_TEXT,
+    GENERATE_BIN,
+    GENERATE_HEX,
     HALT,
     NO_OP,
     ALU_OP,
@@ -165,6 +167,7 @@ typedef struct{
     int file_array_size;
 
     char **output_arrays;
+    int output_binary;
 
 } File_Info;
 extern File_Info f;

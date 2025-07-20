@@ -1,14 +1,16 @@
-
 .section_data
 at #0b0000000000
 
+    
 
-    VARS:                                         
+    VARS:                                
+
         hello_world: .ascii "Hello|World@"   
-
+    
 
 .section_text
 
+    generate_hex
 
         set NULL_TERM #'@'
 
@@ -35,4 +37,5 @@ at #0b0000000000
 
 
 
-sizeof LABELS
+sizeof ALL
+
