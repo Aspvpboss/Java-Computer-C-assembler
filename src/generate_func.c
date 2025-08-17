@@ -9,6 +9,8 @@ char* strint(int num){
     if(!(f.output_binary)){
         return integer_hex_converter(num);
     }
+
+    return NULL;
 }
 
 
@@ -30,7 +32,7 @@ int generate_alu_2(int opcode, int c_bytes, int total_bytes, char **p_string, ch
     if(c_bytes >= 2){
         int reg_a = get_argument_value(tk_3);
         int reg_b = get_argument_value(tk_4);
-        reg_a += (reg_b <<= 3);
+        reg_a += (reg_b << 3);
         tmp = strint(reg_a);
         f.output_arrays[total_bytes + 1] = tmp;
     }
@@ -85,13 +87,13 @@ int generate_alu_1(int opcode, int c_bytes, int total_bytes, char **p_string, ch
         if(strcasecmp(p_string[0], "cmp") == 0){
             int reg_a = get_argument_value(tk_2);
             int reg_b = get_argument_value(tk_3);
-            reg_a += (reg_b <<= 3);
+            reg_a += (reg_b << 3);
             reg_a += 128;
             tmp = strint(reg_a);
             f.output_arrays[total_bytes + 1] = tmp;
         } else{
             int reg_a = get_argument_value(tk_3);
-            reg_a += (reg_a <<= 3);
+            reg_a += (reg_a << 3);
             tmp = strint(reg_a);
             f.output_arrays[total_bytes + 1] = tmp;
         }

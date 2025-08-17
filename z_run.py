@@ -10,7 +10,7 @@ def normal_run():
     current_path = os.getcwd()
 
 
-    os.system("gcc -O2 src/*.c -o compiled/assembler.exe -Iinclude -lregex")
+    os.system("gcc -O2 -Wall -Werror -Wpedantic src/*.c -o compiled/assembler.exe -Iinclude -lregex")
 
     os.chdir(os.path.join(current_path, "compiled"))
 

@@ -61,7 +61,7 @@ int get_tokens(char **file_data){
         f.file_arrays[f.file_lines - 1][amount_tokens - 1] = malloc(sizeof(char) * f.file_array_size);
 
         if(strlen(token) > f.file_array_size){
-            printf("ERROR: token '%s' in line '%d' is %d characters long, max is %d characters long\n", token, c_line + 1, strlen(token), f.file_array_size);
+            printf("ERROR: token '%s' in line '%d' is %lld characters long, max is %d characters long\n", token, c_line + 1, strlen(token), f.file_array_size);
             return 1;
         }
 
@@ -81,7 +81,7 @@ int get_tokens(char **file_data){
             f.file_arrays[f.file_lines - 1][amount_tokens - 1] = malloc(sizeof(char) * f.file_array_size);
 
             if(strlen(token) > f.file_array_size){
-                printf("ERROR: token '%s' in line '%d' is %d characters long, max is %d characters long\n", token, c_line + 1, strlen(token), f.file_array_size);
+                printf("ERROR: token '%s' in line '%d' is %lld characters long, max is %d characters long\n", token, c_line + 1, strlen(token), f.file_array_size);
                 return 1;
             }
             

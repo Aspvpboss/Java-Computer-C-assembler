@@ -402,7 +402,7 @@ int check_page(char *string, Address_Mode mode){
         }
     }
 
-    if(string[0] == '+' && (mode == DIRECT_ADDRESSING || mode == ANY_IMMEDIATE)){
+    if(string[0] == '+' && (mode == DIRECT_ADDRESSING || mode == ANY_ADDRESSING)){
         char *dup_string = strdup(string);
         dup_string++;
 
@@ -783,6 +783,8 @@ char* integer_binary_converter(int integer){
     if(integer > 1023){
         return NULL;
     }
+
+    return NULL;
 }
 
 
@@ -811,7 +813,7 @@ int get_big_immediate_value(char *string){
         return strtol(dup, NULL, 16);
     }
 
-    if(string[0] = '#' && string[1] == '\'' && isprint(string[2]) && string[3] == '\''){
+    if(string[0] == '#' && string[1] == '\'' && isprint(string[2]) && string[3] == '\''){
         return string[2];
     }
 
@@ -1011,4 +1013,6 @@ int get_alu_opcode(char *string){
         return 5;
     if(strcasecmp("cmp", string) == 0)
         return 1;    
+
+    return -1;
 }
