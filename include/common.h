@@ -7,7 +7,6 @@
 #include <regex.h>
 
 
-
 //every opcode 
 typedef enum{
 
@@ -146,8 +145,6 @@ typedef enum{
     TOKEN_FIVE
 
 } Token_Select;
-
-
 
 
 

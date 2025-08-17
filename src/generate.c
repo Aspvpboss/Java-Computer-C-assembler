@@ -459,9 +459,7 @@ int generate_init(){
 
 int generate(){
 
-    if(generate_init()){
-
-    }
+    generate_init();
 
     if(generate_binary()){
         printf("ERROR: generate_binary()\n");

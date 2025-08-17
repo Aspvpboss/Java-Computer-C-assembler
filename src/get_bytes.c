@@ -900,15 +900,15 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
                 if(check_flags(tk_2) && check_if_label_colon(tk_3)){
-                    *opcode = JIF_DIRECT;
+                    *opcode = CIF_DIRECT;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }   
                 if(check_flags(tk_2) && strcmp(tk_2, "ptr") == 0){
-                    *opcode = JIF_INDIRECT_3;
+                    *opcode = CIF_INDIRECT_3;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }      
                 if(strcmp(tk_2, "ptr") == 0 && check_if_label_colon(tk_3)){
-                    *opcode = JIF_INDIRECT_2;
+                    *opcode = CIF_INDIRECT_2;
                     return p_string[TOKEN_FOUR][0] - '0';
                 }                   
             }
@@ -916,15 +916,15 @@ int get_text_bytes(Assembler_Arguments instruction, char **p_string, int MAX_TOK
                 char *tk_2 = get_macro(p_string[TOKEN_TWO]);
                 char *tk_3 = get_macro(p_string[TOKEN_THREE]);
                 if(check_flags(tk_2) && check_if_label_colon(tk_3)){
-                    *opcode = JIF_DIRECT;
+                    *opcode = CIF_DIRECT;
                     return 3;
                 }   
                 if(check_flags(tk_2) && strcmp(tk_2, "ptr") == 0){
-                    *opcode = JIF_INDIRECT_3;
+                    *opcode = CIF_INDIRECT_3;
                     return 2;
                 }      
                 if(strcmp(tk_2, "ptr") == 0 && check_if_label_colon(tk_3)){
-                    *opcode = JIF_INDIRECT_2;
+                    *opcode = CIF_INDIRECT_2;
                     return 3;
                 }          
             }
